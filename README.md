@@ -1,6 +1,6 @@
 # Connect4-AI-Royale
 ## Members
-Luis Alvarado
-Marco Gabriel
-Alejandro Ramos
-Sara Sadek
+Alejandro Ramos (Team Lead)   
+Luis Alvarado   
+Marco Gabriel   
+Sara Sadek   
