@@ -20,6 +20,7 @@ TEXT_COLOR = (255, 255, 255)
 # Initialize screen
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Connect 4 AI Royale")
+		
 
 # Font
 font = pygame.font.Font(None, 36)
@@ -61,38 +62,4 @@ def player_vs_ai_action():
 def sound_action():
     # Add sound-related actions here
     print("Sound button clicked")
-
-# Main loop
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-
-    # Clear the screen
-    screen.fill(BACKGROUND_COLOR)
-
-    # Draw title at the top of the screen
-    draw_text("Connect 4 AI Royale", WIDTH / 2, HEIGHT / 4)
-
-    # Draw buttons middle of the screen
-    draw_button("Leaderboard", WIDTH / 2 - 100, HEIGHT / 2, 200, 50, BUTTON_COLOR, BUTTON_HOVER_COLOR, leaderboard_action)
-    draw_button("AI vs AI", WIDTH / 2 - 100, HEIGHT / 2 + 60, 200, 50, BUTTON_COLOR, BUTTON_HOVER_COLOR, ai_vs_ai_action)
-    draw_button("Player vs AI", WIDTH / 2 - 100, HEIGHT / 2 + 120, 200, 50, BUTTON_COLOR, BUTTON_HOVER_COLOR, player_vs_ai_action)
-
-    # Draw sound button at the top right
-    sound_button_width = 200
-    sound_button_height = 50
-    sound_button_x = WIDTH - sound_button_width - 20
-    sound_button_y = 20
-    draw_button("Sound", sound_button_x, sound_button_y, sound_button_width, sound_button_height, BUTTON_COLOR, BUTTON_HOVER_COLOR, sound_action)
-
-    # Update the display
-    pygame.display.flip()
-
-    # Cap the frame rate
-    pygame.time.Clock().tick(FPS)
-
-# Quit Pygame
-pygame.quit()
-sys.exit()
+    
