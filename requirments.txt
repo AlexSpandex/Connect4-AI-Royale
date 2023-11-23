@@ -1,0 +1,3 @@
+Package Version
+------- -------
+pygame  2.5.2
