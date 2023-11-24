@@ -28,10 +28,10 @@ class MonteCarloTreeNode:
         self.game_over = False
         
         # Add the current node to the dictionary hold refrence to self so if self changes so does the value of the dictionary at state
-        MonteCarloTreeNode.all_nodes[self.state] = self
+        MonteCarloTreeNode.all_nodes[tuple(map(tuple, self.state))] = self
 
     def find_node_if_in_tree(initial_state):
-        return MonteCarloTreeNode.all_nodes.get(initial_state, None)
+        return MonteCarloTreeNode.all_nodes.get(tuple(map(tuple, initial_state)), None)
 
     def get_legal_actions(self):
         legal_actions = []
@@ -40,7 +40,7 @@ class MonteCarloTreeNode:
                 new_state = [row.copy() for row in self.state]
                 for row in reversed(range(len(new_state))):
                     if new_state[row][column] == 0:
-                        new_state[row][column] = self.opponent #could be self.current state I'm unsure
+                        new_state[row][column] = self.opponent #could be self.current_player state I'm unsure
                         legal_actions.append(new_state)
                         break  # Break once you've placed a piece in the column
         return legal_actions
@@ -71,7 +71,7 @@ class MonteCarloTreeNode:
                     return True
         return False
     def is_diagonal(self):
-        for column in range(len(self.state[0])):
+        for column in range(len(self.state[0])-3):
             for row in range(len(self.state)-3):
                 if (
                     self.state[row][column] == self.current_player and
@@ -109,20 +109,32 @@ class MonteCarloTreeNode:
         return len(self.untried_actions)==0
 
     def random_choices_when_utc_unknown_called_rollout_simulation(self):
-        current_random_state = self.state.copy()
+        current_random_state = self
         current_player = self.current_player
-        while not current_random_state.is_terminal_and_win() or current_random_state.get_legal_actions():#while not a win or lose and there are still more possible actions
+
+        while not current_random_state.is_terminal_and_win():
             legal_actions = current_random_state.get_legal_actions()
-            random_action = MonteCarloTreeNode(random.choice(legal_actions), self.opponent, current_random_state)
-            current_random_state = random_action.state.copy()
 
             if not legal_actions:
+                # Handle the termination condition appropriately, for example, return 0
                 return 0
-            elif current_random_state.is_terminal_and_win():
-                if current_player == self.current_player:
-                    return 1
-                else:
-                    return -1
+
+            random_action = random.choice(legal_actions)
+            
+            # Ensure that the chosen random action does not exceed the bounds of the game state
+            current_random_state = MonteCarloTreeNode(random_action, current_random_state.opponent, current_random_state)
+
+            for lis in current_random_state.state:
+                print(lis)
+            print(current_random_state.current_player,self.current_player, '\n')
+                    
+        print(current_random_state.current_player,self.current_player, '\n')
+        # Check the result after the simulation
+        if current_random_state.current_player == self.current_player:
+            return 1
+        else:
+            return -1
+
     
     def backpropogate_assign_wins_and_losses_after_simulation(self, result):
         current_node = self
@@ -135,21 +147,21 @@ class MonteCarloTreeNode:
             else:
                 pass
             current_node = current_node.parent
-def monte_carlo_tree_search(initial_state, iterations=1000, current_player=1):
-    # Check if the tree already has a node with the initial state
-    root_node = MonteCarloTreeNode.find_node_if_in_tree(initial_state)
-    # If not, create a new root node with the initial state
-    if root_node is None:
-        root_node = MonteCarloTreeNode(initial_state, current_player=current_player)
-    else:
-        root_node = MonteCarloTreeNode.all_nodes[initial_state]
-    for _ in range(iterations):
-        selected_node = root_node.selection()
-        if not selected_node.is_terminal_and_win():
-            child_node = selected_node.expand_current_node()
-            result = child_node.random_choices_when_utc_unknown_called_rollout_simulation()
-            child_node.backpropogate_assign_wins_and_losses_after_simulation(result)
-    # After the search is complete, choose the best move based on the statistics
-    best_child = max(root_node.children, key=lambda x: x.visits)
-    best_move = best_child.state
-    return best_move
+    def monte_carlo_tree_search(initial_state, iterations=1000, current_player=1):
+        # Check if the tree already has a node with the initial state
+        root_node = MonteCarloTreeNode.find_node_if_in_tree(initial_state)
+        # If not, create a new root node with the initial state
+        if root_node is None:
+            root_node = MonteCarloTreeNode(initial_state, current_player=current_player)
+        else:
+            root_node = MonteCarloTreeNode.all_nodes[tuple(map(tuple, initial_state))]
+        for _ in range(iterations):
+            selected_node = root_node.selection()
+            if not selected_node.is_terminal_and_win():
+                child_node = selected_node.expand_current_node()
+                result = child_node.random_choices_when_utc_unknown_called_rollout_simulation()
+                child_node.backpropogate_assign_wins_and_losses_after_simulation(result)
+        # After the search is complete, choose the best move based on the statistics
+        best_child = max(root_node.children, key=lambda x: x.visits)
+        best_move = best_child.state
+        return best_move
