@@ -92,8 +92,8 @@ class MonteCarloTreeNode:
             exploration_factor = math.sqrt(2)
             choosen_ucb_is_max_ucb = float('-inf')
             for child in self.children:
-                exploitation_factor=(child.wins/child.visits)
-                ucb=exploitation_factor+exploitation_factor*math.sqrt(math.log(self.visits)/child.visits)
+                exploitation_factor=(child.wins/(child.visits+1))
+                ucb=exploitation_factor+exploitation_factor*math.sqrt(math.log(self.visits)/(child.visits+1))
                 if ucb > choosen_ucb_is_max_ucb:
                     choosen_ucb_is_max_ucb = ucb
                     selected_child = child
@@ -111,24 +111,19 @@ class MonteCarloTreeNode:
     def random_choices_when_utc_unknown_called_rollout_simulation(self):
         current_random_state = self
         current_player = self.current_player
-
         while not current_random_state.is_terminal_and_win():
             legal_actions = current_random_state.get_legal_actions()
-
             if not legal_actions:
                 # Handle the termination condition appropriately, for example, return 0
                 return 0
-
             random_action = random.choice(legal_actions)
-            
             # Ensure that the chosen random action does not exceed the bounds of the game state
             current_random_state = MonteCarloTreeNode(random_action, current_random_state.opponent, current_random_state)
-
-            for lis in current_random_state.state:
+            '''for lis in current_random_state.state:
                 print(lis)
-            print(current_random_state.current_player,self.current_player, '\n')
-                    
-        print(current_random_state.current_player,self.current_player, '\n')
+            print(current_random_state.current_player,self.current_player,'\n') 
+        for lis in current_random_state.parent.state:
+            print('parent',lis) '''                 
         # Check the result after the simulation
         if current_random_state.current_player == self.current_player:
             return 1
@@ -147,6 +142,7 @@ class MonteCarloTreeNode:
             else:
                 pass
             current_node = current_node.parent
+
     def monte_carlo_tree_search(initial_state, iterations=1000, current_player=1):
         # Check if the tree already has a node with the initial state
         root_node = MonteCarloTreeNode.find_node_if_in_tree(initial_state)

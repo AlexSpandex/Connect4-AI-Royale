@@ -39,7 +39,29 @@ for obj in node.children:
 
 print(node.is_fully_expanded())
 print(node.random_choices_when_utc_unknown_called_rollout_simulation())
+print(MonteCarloTreeNode.find_node_if_in_tree(node.state))
+root_node = MonteCarloTreeNode.all_nodes[tuple(map(tuple, node.state))]
+print(root_node.current_player)
 
+for _ in range(1000):
+    selected_node = root_node.selection()
+    if not selected_node.is_terminal_and_win():
+        if not selected_node.is_fully_expanded():
+            child_node = selected_node.expand_current_node()
+        result = child_node.random_choices_when_utc_unknown_called_rollout_simulation()
+        child_node.backpropogate_assign_wins_and_losses_after_simulation(result)
+# After the search is complete, choose the best move based on the statistics
+best_child = max(root_node.children, key=lambda x: x.visits)
+best_move = best_child.state
+
+print(best_child.visits, best_child.wins, best_child.losses)
+for row in best_child.state:
+    print(row, 'best child')
+
+i=0
+for child in root_node.children:
+    i=i+1
+    print(i, child.visits, child.visits, child.wins, child.losses)
 '''# Create an instance of MonteCarloTreeNode
 root_node = MonteCarloTreeNode(initial_state_of_other_as_player_1, current_player=1)
 
