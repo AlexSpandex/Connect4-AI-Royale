@@ -2,6 +2,7 @@ import pygame
 import sys
 from connect_4.title_screen import *
 from connect_4.sounds import *
+from connect_4.board import *
 
 class Game:
 
@@ -24,7 +25,7 @@ class Game:
             draw_button("Leaderboard", WIDTH / 2 - 100, HEIGHT / 2, 200, 50, BUTTON_COLOR, BUTTON_HOVER_COLOR, leaderboard_action)
             draw_button("AI vs AI", WIDTH / 2 - 100, HEIGHT / 2 + 60, 200, 50, BUTTON_COLOR, BUTTON_HOVER_COLOR, ai_vs_ai_action)
             draw_button("Player vs AI", WIDTH / 2 - 100, HEIGHT / 2 + 120, 200, 50, BUTTON_COLOR, BUTTON_HOVER_COLOR, player_vs_ai_action)
-
+            PLAYER = draw_button("Player vs Player", WIDTH / 2 - 100, HEIGHT / 2 + 180, 200, 50, BUTTON_COLOR, BUTTON_HOVER_COLOR, players_vs_player_action)
             # Draw sound button at the top right
             sound_button_width = 200
             sound_button_height = 50
@@ -37,8 +38,9 @@ class Game:
                     pygame.quit()
                     sys.exit()
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    if SOUND_BUTTON:
-                        sound_action()
+                    if PLAYER:
+                        players_vs_player_action()
+                        Play()
 
             # Update the display
             pygame.display.flip()

@@ -1,4 +1,4 @@
-# Title Screen
+"""Title Screen"""
 
 import pygame
 import sys
@@ -57,7 +57,10 @@ def ai_vs_ai_action():
 # Function for Player vs AI action
 def player_vs_ai_action():
     print("Player vs AI button clicked")
-
+    
+def players_vs_player_action():
+    print("Player vs Player button clicked")
+    
 # Function for sound action
 def sound_action():
     # Add sound-related actions here
