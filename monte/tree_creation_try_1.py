@@ -96,7 +96,7 @@ class MonteCarloTreeNode:
         return len(self.untried_actions)==0
 
     def random_choice(self):
-        legal_actions = self.get_legal_actions()
+        legal_actions = self.untried_actions
         random_state_or_action = random.choice(legal_actions)
         # Ensure that the chosen random action does not exceed the bounds of the game state
         return random_state_or_action
