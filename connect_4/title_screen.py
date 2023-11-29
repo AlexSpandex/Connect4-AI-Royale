@@ -1,68 +1,111 @@
-"""Title Screen"""
+"""This is the title screen when the game is runned"""
 
 import pygame
 import sys
+from connect_4.play import PlayerGame
+import connect_4.rgbcolors
 
-# Initialize Pygame
-pygame.init()
 
-# Constants
-WIDTH = 800
-HEIGHT = 600
-FPS = 30
+class TitleScreen:
+    """Sets up the Scene of the game"""
 
-# Modern Colors
-BACKGROUND_COLOR = (40, 40, 40)
-BUTTON_COLOR = (63, 81, 181)
-BUTTON_HOVER_COLOR = (33, 150, 243)
-TEXT_COLOR = (255, 255, 255)
+    def __init__(self):
+        pygame.init()
 
-# Initialize screen
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Connect 4 AI Royale")
-		
+        self.width, self.height = 800, 600
+        self.screen = pygame.display.set_mode((self.width, self.height))
+        pygame.display.set_caption("Connect 4 AI Royale")
+        self.clock = pygame.time.Clock()
+        self.start_game = False
+        self.selected_option = None
 
-# Font
-font = pygame.font.Font(None, 36)
+    def draw_menu(self):
+        """This takes care of drawing the buttons and text on the screen"""
 
-# Function to draw text on the screen
-def draw_text(text, x, y, color=TEXT_COLOR):
-    text_surface = font.render(text, True, color)
-    text_rect = text_surface.get_rect()
-    text_rect.center = (x, y)
-    screen.blit(text_surface, text_rect)
+        font = pygame.font.Font(None, 36)
+        title_text = font.render("Connect 4 Royale", True, connect_4.rgbcolors.white)
 
-# Function to create modern buttons
-def draw_button(text, x, y, width, height, inactive_color, active_color, action=None):
-    mouse = pygame.mouse.get_pos()
-    click = pygame.mouse.get_pressed()
+        # get title dimensions
+        title_width, title_height = title_text.get_size()
 
-    if x + width > mouse[0] > x and y + height > mouse[1] > y:
-        pygame.draw.rect(screen, active_color, (x, y, width, height))
-        if click[0] == 1 and action is not None:
-            action()
-    else:
-        pygame.draw.rect(screen, inactive_color, (x, y, width, height))
+        # creating button foudations
+        leaderboard_button = pygame.Rect(
+            (self.width / 2 - 100, self.height / 2), (200, 50)
+        )
+        ai_vs_ai_button = pygame.Rect(
+            (self.width / 2 - 100, self.height / 2 + 60), (200, 50)
+        )
+        player_vs_ai_button = pygame.Rect(
+            (self.width / 2 - 100, self.height / 2 + 120), (200, 50)
+        )
 
-    draw_text(text, x + width / 2, y + height / 2, color=TEXT_COLOR)
+        # creating the text for the buttons
+        leaderboard_text = font.render("Leaderboard", True, connect_4.rgbcolors.white)
+        ai_vs_ai_text = font.render("AI vs AI", True, connect_4.rgbcolors.white)
+        player_vs_ai_text = font.render("Player vs AI", True, connect_4.rgbcolors.white)
 
-# Function for leaderboard action
-def leaderboard_action():
-    print("Leaderboard button clicked")
+        # Get text dimensions
+        leader_width, leader_height = leaderboard_text.get_size()
+        ai_width, ai_height = ai_vs_ai_text.get_size()
+        player_width, player_height = player_vs_ai_text.get_size()
 
-# Function for AI vs AI action
-def ai_vs_ai_action():
-    print("AI vs AI button clicked")
+        # Get mouse position
+        MOUSE_POS = pygame.mouse.get_pos()
 
-# Function for Player vs AI action
-def player_vs_ai_action():
-    print("Player vs AI button clicked")
-    
-def players_vs_player_action():
-    print("Player vs Player button clicked")
-    
-# Function for sound action
-def sound_action():
-    # Add sound-related actions here
-    print("Sound button clicked")
-    
+        # drawing the buttons on screen
+        pygame.draw.rect(self.screen, (63, 81, 181), leaderboard_button)
+        pygame.draw.rect(self.screen, (63, 81, 181), ai_vs_ai_button)
+        pygame.draw.rect(self.screen, (63, 81, 181), player_vs_ai_button)
+
+        # adds the title on the screen
+        self.screen.blit(
+            title_text, (self.width / 2 - title_width / 2, self.height / 4)
+        )
+
+        # drawing the buttons on screen with hover effect
+        for button, text, text_pos in zip(
+            [leaderboard_button, ai_vs_ai_button, player_vs_ai_button],
+            [leaderboard_text, ai_vs_ai_text, player_vs_ai_text],
+            [
+                (
+                    self.width / 2 - leader_width / 2,
+                    self.height / 2 + (50 - leader_height) / 2,
+                ),
+                (
+                    self.width / 2 - ai_width / 2,
+                    self.height / 2 + 60 + (50 - ai_height) / 2,
+                ),
+                (
+                    self.width / 2 - player_width / 2,
+                    self.height / 2 + 120 + (50 - player_height) / 2,
+                ),
+            ],
+        ):
+            # Check if mouse is over the button
+            is_hovered = button.collidepoint(MOUSE_POS)
+
+            # Draw the button with hover effect
+            button_color = (63, 81, 181) if not is_hovered else (33, 150, 243)
+            pygame.draw.rect(self.screen, button_color, button)
+
+            # Draw the text
+            self.screen.blit(text, text_pos)
+
+    def handle_button_event(self, mouse_pos):
+        """This handles the events when buttons are being pressed"""
+        leaderboard_button = pygame.Rect(
+            (self.width / 2 - 100, self.height / 2), (200, 50)
+        )
+        ai_vs_ai_button = pygame.Rect(
+            (self.width / 2 - 100, self.height / 2 + 60), (200, 50)
+        )
+        player_vs_ai_button = pygame.Rect(
+            (self.width / 2 - 100, self.height / 2 + 120), (200, 50)
+        )
+
+        if leaderboard_button.collidepoint(mouse_pos):
+            self.selected_option = "Leaderboard"
+        elif ai_vs_ai_button.collidepoint(mouse_pos):
+            self.selected_option = "AI vs AI"
+        elif player_vs_ai_button.collidepoint(mouse_pos):
+            self.selected_option = "Player vs AI"
