@@ -4,6 +4,7 @@ import pygame
 import sys
 from connect_4.title_screen import TitleScreen
 from connect_4.sounds import Sounds
+from connect_4.player import PlayerGame
 
 
 class Game:
@@ -15,6 +16,7 @@ class Game:
         self.start_game = False
         self.selected_option = None
         self.title_screen = TitleScreen()
+        self.player_game = PlayerGame(self.title_screen.screen)
 
     def run(self):
         """Main loop"""
@@ -38,15 +40,16 @@ class Game:
 
                     if self.title_screen.selected_option:
                         if self.title_screen.selected_option == "AI vs AI":
-                            self.start_game = True
+                            pass
 
                         elif self.title_screen.selected_option == "Player vs AI":
                             # Implement functionality here
-                            self.start_game = True
+                            # self.start_game = True
+                            self.player_game.run()
 
                         elif self.title_screen.selected_option == "Leaderboard":
                             # Implement functionality here
-                            self.start_game = True
+                            pass
 
             self.title_screen.screen.fill((40, 40, 40))
             self.title_screen.draw_menu()
