@@ -31,6 +31,15 @@ class PlayerGame:
         """Calls the drawboard function from Board Class"""
         self.board.draw_board(self.screen, self.SQUARESIZE, self.RADIUS)
 
+    def draw_winner(self, winner):
+        """Display the winning message"""
+        text = self.font.render(f"{winner} wins!", True, connect_4.rgbcolors.black)
+        text_rect = text.get_rect(center=(self.width // 2, self.SQUARESIZE // 2))
+        self.screen.blit(text, text_rect)
+        pygame.display.update()
+        # Wait for 1 second
+        pygame.time.wait(1000)
+
     def reset_game(self):
         """When the game is over restart"""
         self.board = Board()
@@ -38,42 +47,34 @@ class PlayerGame:
         self.turn = 0
 
     def run(self):
-        """Runs the game"""
         while not self.game_over:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     sys.exit()
 
+                # this moves the pieces when mouse moves
                 if event.type == pygame.MOUSEMOTION:
-                    # Draw the background only once
-                    pygame.draw.rect(
-                        self.screen, connect_4.rgbcolors.light_blue, (0, 0, self.width, self.SQUARESIZE)
-                    )
-
-                    posx = event.pos[0]
-                    if self.turn == 0:
-                        pygame.draw.circle(
-                            self.screen,
-                            connect_4.rgbcolors.red,
-                            (posx, int(self.SQUARESIZE / 2)),
-                            self.RADIUS,
-                        )
-                    else:
-                        pygame.draw.circle(
-                            self.screen,
-                            connect_4.rgbcolors.yellow,
-                            (posx, int(self.SQUARESIZE / 2)),
-                            self.RADIUS,
-                        )
-
-                    pygame.display.update()
-
-                if event.type == pygame.MOUSEBUTTONDOWN:
                     pygame.draw.rect(
                         self.screen,
                         connect_4.rgbcolors.light_blue,
                         (0, 0, self.width, self.SQUARESIZE),
                     )
+                    posx = event.pos[0]
+                    color = (
+                        connect_4.rgbcolors.red
+                        if self.turn == 0
+                        else connect_4.rgbcolors.yellow
+                    )
+                    pygame.draw.circle(
+                        self.screen,
+                        color,
+                        (posx, int(self.SQUARESIZE / 2)),
+                        self.RADIUS,
+                    )
+                    pygame.display.update()
+
+                # handles when the drop piece is dropped
+                if event.type == pygame.MOUSEBUTTONDOWN:
                     posx = event.pos[0]
                     col = int(math.floor(posx / self.SQUARESIZE))
 
@@ -83,14 +84,13 @@ class PlayerGame:
 
                         if self.board.winning_move(self.turn + 1):
                             self.game_over = True
-                            self.last_win_time = pygame.time.get_ticks()
-                            pygame.time.wait(1000)  # Wait for 1 second
+                            self.draw_winner(f"Player {self.turn + 1}")
                             self.reset_game()
 
-                    self.turn += 1
-                    self.turn %= 2
+                        self.turn += 1
+                        self.turn %= 2
+
+                    pygame.display.update()
 
                 # Draw the board and update the display continuously
                 self.draw_board()
-
-                pygame.display.update()
