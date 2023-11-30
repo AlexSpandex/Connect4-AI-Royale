@@ -2,8 +2,8 @@ import random
 import math
 
 class MonteCarloTreeNode:
-    '''# Class variable to store all nodes
-    all_nodes = {}'''
+    # Class variable to store all nodes
+    all_nodes = {}
     def __init__(self, state, current_player, parent=None):
         # The state of the game represented by the node
         self.state = state
@@ -30,8 +30,8 @@ class MonteCarloTreeNode:
         # Add the current node to the dictionary hold refrence to self so if self changes so does the value of the dictionary at state
         MonteCarloTreeNode.all_nodes[tuple(map(tuple, self.state))] = self
 
-    '''def find_node_if_in_tree(initial_state):
-        return MonteCarloTreeNode.all_nodes.get(tuple(map(tuple, initial_state)), None)'''
+    def find_node_if_in_tree(initial_state):
+        return MonteCarloTreeNode.all_nodes.get(tuple(map(tuple, initial_state)), None)
 
     def get_legal_actions(self):
         legal_actions = []
@@ -95,12 +95,31 @@ class MonteCarloTreeNode:
     def is_fully_expanded(self):
         return len(self.untried_actions)==0
 
-    def random_choice(self):
-        legal_actions = self.untried_actions
-        random_state_or_action = random.choice(legal_actions)
+    def random_choice(self, possible_actions):
+        #legal_actions = self.untried_actions
+        random_state_or_action = random.choice(possible_actions)
         # Ensure that the chosen random action does not exceed the bounds of the game state
         return random_state_or_action
     
+    def simulate_fake_game_randomly_till_terminal(self):
+        current_node = self
+        while not current_node.is_terminal_and_win() and not current_node.no_winner():
+            possible_actions = current_node.get_legal_actions()
+            action = current_node.random_choice(possible_actions)
+            '''for row in action:
+                print(row, current_node.current_player)
+            print('\n')'''
+            if MonteCarloTreeNode.find_node_if_in_tree(action) != None:
+                current_node = MonteCarloTreeNode.all_nodes[tuple(map(tuple, action))]
+            else:
+                current_node = MonteCarloTreeNode(action, current_node.opponent, current_node)
+        if current_node.is_terminal_and_win() and current_node.current_player == self.opponent:
+            return 1
+        elif current_node.no_winner():
+            return 0
+        else:
+            return -1
+
     def backpropogate_assign_wins_and_losses_after_simulation(self, result):
         current_node = self
         while current_node is not None:
