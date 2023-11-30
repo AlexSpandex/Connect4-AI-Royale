@@ -12,7 +12,7 @@ class PlayerGame:
 
     def __init__(self, screen):
         pygame.init()
-        
+
         self.board = Board()
         self.game_over = False
         self.turn = 0
@@ -47,7 +47,7 @@ class PlayerGame:
                 if event.type == pygame.MOUSEMOTION:
                     # Draw the background only once
                     pygame.draw.rect(
-                        self.screen, LIGHTBLUE, (0, 0, self.width, self.SQUARESIZE)
+                        self.screen, connect_4.rgbcolors.light_blue, (0, 0, self.width, self.SQUARESIZE)
                     )
 
                     posx = event.pos[0]

@@ -9,8 +9,8 @@ class Sounds:
 
     # plays music
     @staticmethod
-    def start():
-        """Starts the music"""
+    def title_music():
+        """Starts the menu screen music"""
         
         if True:
             try:

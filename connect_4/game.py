@@ -5,6 +5,7 @@ import sys
 from connect_4.title_screen import TitleScreen
 from connect_4.sounds import Sounds
 from connect_4.player import PlayerGame
+import connect_4.rgbcolors
 
 
 class Game:
@@ -22,7 +23,7 @@ class Game:
         """Main loop"""
 
         # plays the music when game starts
-        Sounds.start()
+        Sounds.title_music()
 
         while True:
             MENU_MOUSE_POS = pygame.mouse.get_pos()
@@ -51,7 +52,7 @@ class Game:
                             # Implement functionality here
                             pass
 
-            self.title_screen.screen.fill((40, 40, 40))
+            self.title_screen.screen.fill(connect_4.rgbcolors.grey16)
             self.title_screen.draw_menu()
             pygame.display.update()
             self.title_screen.clock.tick(30)
