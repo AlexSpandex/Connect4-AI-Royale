@@ -12,14 +12,31 @@ for obj in node.children:
         print(row)
     print('children \n')
 
-'''node.selection()
+'''node.expand_current_node()
 for obj in node.children:
     for row in obj.state:
         print(row)
-    print('children \n')'''
+    print('children \n')
+
+for lis in node.untried_actions:
+    for row in lis:
+        print(row)
+    print('untried \n')'''
 
 print(node.is_fully_expanded())
 print(node.simulate_fake_game_randomly_till_terminal())
+#print(node.select_node_based_on_uct_unless_all_children_not_expanded_to_use_for_simulation().state)
+state = [
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 1, 1],
+    [0, 0, 0, 1, 2, 1, 2]
+]
+action = MonteCarloTreeNode.monte_carlo_tree_search(state, 1000, 1)
+for row in action.state:
+    print(row)
 '''print(MonteCarloTreeNode.find_node_if_in_tree(node.state))
 root_node = MonteCarloTreeNode.all_nodes[tuple(map(tuple, node.state))]
 print(root_node.current_player)
