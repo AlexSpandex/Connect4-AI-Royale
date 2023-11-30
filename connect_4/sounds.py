@@ -1,6 +1,7 @@
 """Runs the sounds that are being played"""
 
 import pygame
+import sys
 
 
 class Sounds:

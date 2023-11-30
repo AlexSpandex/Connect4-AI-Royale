@@ -2,7 +2,7 @@
 
 import pygame
 import sys
-from connect_4.play import PlayerGame
+from connect_4.player import PlayerGame
 import connect_4.rgbcolors
 
 
@@ -10,6 +10,7 @@ class TitleScreen:
     """Sets up the Scene of the game"""
 
     def __init__(self):
+        
         pygame.init()
 
         self.width, self.height = 800, 600
@@ -81,7 +82,7 @@ class TitleScreen:
                 ),
             ],
         ):
-            # Check if mouse is over the button
+            # Check if the mouse is over the button
             is_hovered = button.collidepoint(MOUSE_POS)
 
             # Draw the button with hover effect
@@ -102,10 +103,13 @@ class TitleScreen:
         player_vs_ai_button = pygame.Rect(
             (self.width / 2 - 100, self.height / 2 + 120), (200, 50)
         )
-
+        
         if leaderboard_button.collidepoint(mouse_pos):
             self.selected_option = "Leaderboard"
+            print("Leaderboard button pressed")
         elif ai_vs_ai_button.collidepoint(mouse_pos):
             self.selected_option = "AI vs AI"
+            print("AI vs AI button pressed")
         elif player_vs_ai_button.collidepoint(mouse_pos):
             self.selected_option = "Player vs AI"
+            print("Player vs AI button pressed")
