@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """This is where all the functions goes in the game"""
 
 from connect_4.game import *

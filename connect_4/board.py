@@ -1,7 +1,6 @@
 """The board for connect 4"""
 
 import pygame
-import sys
 import numpy as np
 import connect_4.rgbcolors
 
@@ -20,7 +19,7 @@ class Board:
         self.width = self.COLUMN_COUNT * self.SQUARESIZE
         self.height = (self.ROW_COUNT + 1) * self.SQUARESIZE
 
-        self.size = (self.width, self.height)
+        # self.size = (self.width, self.height)
 
     def create_board(self):
         """Creating the board layout"""
@@ -91,7 +90,7 @@ class Board:
                     and self.board[r - 3][c + 3] == piece
                 ):
                     return True
-
+                
     def draw_board(self, screen, RADIUS):
         """Draws the board on screen"""
         # board drawing
@@ -102,7 +101,7 @@ class Board:
                     connect_4.rgbcolors.blue,
                     (
                         c * self.SQUARESIZE,
-                        r * self.SQUARESIZE + SQUARESIZE,
+                        r * self.SQUARESIZE + self.SQUARESIZE,
                         self.SQUARESIZE,
                         self.SQUARESIZE,
                     ),

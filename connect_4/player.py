@@ -20,14 +20,14 @@ class PlayerGame:
         self.SQUARESIZE = 100
         self.width = self.board.COLUMN_COUNT * self.SQUARESIZE
         self.height = (self.board.ROW_COUNT + 1) * self.SQUARESIZE
-        
+
         self.RADIUS = int(self.SQUARESIZE / 2 - 5)
-        self.screen = screen
+        self.screen = pygame.display.set_mode((self.width, self.height))
         self.font = pygame.font.Font(None, 36)
 
     def draw_board(self):
         """Calls the drawboard function from Board Class"""
-        self.board.draw_board(self.screen, self.SQUARESIZE, self.RADIUS)
+        self.board.draw_board(self.screen, self.RADIUS)
 
     def draw_winner(self, winner):
         """Display the winning message"""
@@ -58,17 +58,23 @@ class PlayerGame:
                         (0, 0, self.width, self.SQUARESIZE),
                     )
                     posx = event.pos[0]
-                    color = (
-                        connect_4.rgbcolors.red
-                        if self.turn == 0
-                        else connect_4.rgbcolors.yellow
-                    )
-                    pygame.draw.circle(
-                        self.screen,
-                        color,
-                        (posx, int(self.SQUARESIZE / 2)),
-                        self.RADIUS,
-                    )
+
+                    if self.turn == 0:
+                        pygame.draw.circle(
+                            self.screen,
+                            connect_4.rgbcolors.red,
+                            (posx, int(self.SQUARESIZE / 2)),
+                            self.RADIUS,
+                        )
+                    else:
+                        pygame.draw.circle(
+                            self.screen,
+                            connect_4.rgbcolors.yellow,
+                            (posx, int(self.SQUARESIZE / 2)),
+                            self.RADIUS,
+                        )
+
+                pygame.display.update()
 
                 # handles when the drop piece is dropped
                 if event.type == pygame.MOUSEBUTTONDOWN:
