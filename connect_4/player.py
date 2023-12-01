@@ -22,7 +22,7 @@ class PlayerGame:
         self.height = (self.board.ROW_COUNT + 1) * self.SQUARESIZE
 
         self.RADIUS = int(self.SQUARESIZE / 2 - 5)
-        self.screen = pygame.display.set_mode((self.width, self.height))
+        self.screen = screen
         self.font = pygame.font.Font(None, 36)
 
     def draw_board(self):
