@@ -31,12 +31,15 @@ state = [
     [0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 1, 1],
+    [0, 0, 0, 0, 1, 1, 1],
     [0, 0, 0, 1, 2, 1, 2]
 ]
 action = MonteCarloTreeNode.monte_carlo_tree_search(state, 1000, 1)
 for row in action.state:
     print(row)
+
+row_column = MonteCarloTreeNode.get_coordinates(state, action.state)
+print(row_column)
 '''print(MonteCarloTreeNode.find_node_if_in_tree(node.state))
 root_node = MonteCarloTreeNode.all_nodes[tuple(map(tuple, node.state))]
 print(root_node.current_player)

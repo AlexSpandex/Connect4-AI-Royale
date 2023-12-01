@@ -171,10 +171,15 @@ class MonteCarloTreeNode:
             choosen_action = root_node.select_node_based_on_uct_unless_all_children_not_expanded_to_use_for_simulation()
             reward_or_penalty = choosen_action.simulate_fake_game_randomly_till_terminal()
             choosen_action.backpropogate_assign_wins_and_losses_after_simulation(reward_or_penalty)
-            '''wins = [c.wins for c in root_node.children]
+            wins = [c.wins for c in root_node.children]
             visits = [c.visits for c in root_node.children]
-            print(reward_or_penalty, wins, visits, root_node.wins, root_node.visits)'''
+            print(reward_or_penalty,'wins', wins, 'visits', visits,'root wins', root_node.wins, root_node.visits)
         avg_score = [c.wins/c.visits for c in root_node.children]
-        print(avg_score.index(max(avg_score)))
-        return root_node.best_uct_score_in_children_of_current_node()
+        best_avg_score_index = avg_score.index(max(avg_score))
+        return root_node.children[best_avg_score_index]
 
+    def get_coordinates(root_state, best_child_state):
+        for column in range(len(root_state[0])):
+            for row in range(len(root_state)):
+                if root_state[row][column] != best_child_state[row][column]:
+                    return row, column
