@@ -81,6 +81,7 @@ class PlayerGame:
                     posx = event.pos[0]
                     col = int(math.floor(posx / self.SQUARESIZE))
 
+                    # player taking turns
                     if self.board.valid_location(col):
                         row = self.board.open_row(col)
                         self.board.drop_piece(row, col, self.turn + 1)
