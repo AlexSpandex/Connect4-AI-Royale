@@ -20,10 +20,8 @@ class PlayerGame:
         self.SQUARESIZE = 100
         self.width = self.board.COLUMN_COUNT * self.SQUARESIZE
         self.height = (self.board.ROW_COUNT + 1) * self.SQUARESIZE
-
-        self.size = (800, 600)
+        
         self.RADIUS = int(self.SQUARESIZE / 2 - 5)
-
         self.screen = screen
         self.font = pygame.font.Font(None, 36)
 
@@ -37,8 +35,8 @@ class PlayerGame:
         text_rect = text.get_rect(center=(self.width // 2, self.SQUARESIZE // 2))
         self.screen.blit(text, text_rect)
         pygame.display.update()
-        # Wait for 1 second
-        pygame.time.wait(1000)
+        # Wait for 3 seconds
+        pygame.time.wait(3000)
 
     def reset_game(self):
         """When the game is over restart"""
@@ -52,7 +50,7 @@ class PlayerGame:
                 if event.type == pygame.QUIT:
                     sys.exit()
 
-                # this moves the pieces when mouse moves
+                # this moves the pieces when the mouse moves
                 if event.type == pygame.MOUSEMOTION:
                     pygame.draw.rect(
                         self.screen,
@@ -71,7 +69,6 @@ class PlayerGame:
                         (posx, int(self.SQUARESIZE / 2)),
                         self.RADIUS,
                     )
-                    pygame.display.update()
 
                 # handles when the drop piece is dropped
                 if event.type == pygame.MOUSEBUTTONDOWN:
@@ -90,7 +87,9 @@ class PlayerGame:
                         self.turn += 1
                         self.turn %= 2
 
-                    pygame.display.update()
+                    # prints the board game onto the terminal
+                    self.board.print_board()
 
-                # Draw the board and update the display continuously
-                self.draw_board()
+            # Draw the board and update the display continuously
+            self.draw_board()
+            pygame.display.update()
