@@ -4,6 +4,7 @@ import pygame
 import sys
 import math
 from connect_4.board import Board
+from connect_4.sounds import Sounds
 import connect_4.rgbcolors
 
 
@@ -45,6 +46,9 @@ class PlayerGame:
         self.turn = 0
 
     def run(self):
+        Sounds.stop()
+        Sounds.game_music()
+
         while not self.game_over:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
