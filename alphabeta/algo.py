@@ -9,10 +9,10 @@ game_board = Board()
 
 def is_terminal(board):
     """checks if either the player or AI or game is not done"""
-    return game_board.winning_move(board, PLAYER) or game_board.winning_move(board, AI) or len(get_valid_locations(board)) == 0
+    return game_board.winning_move(PLAYER) or game_board.winning_move(AI) or len(get_valid_locations(board)) == 0
 
 def get_valid_locations(board):
-    return [column for column in range(COL) if game_board.valid_location(board, column)]
+    return [column for column in range(COL) if game_board.valid_location(column)]
 
 def evaluate(window, piece):
     # switches as player plays
@@ -44,7 +44,7 @@ def score_directions(board, piece, directions):
     return total_score
 
 class AlphaBetaAlgo:
-    def minmax(self, board, depth, alpha, beta, maxPlayer):
+    def alpha_beta(self, board, depth, alpha, beta, maxPlayer):
         valid_loc = get_valid_locations(board)
         is_terminal_node = is_terminal(board)
 

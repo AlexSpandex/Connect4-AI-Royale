@@ -1,23 +1,20 @@
-"""Players vs Monte file"""
-# Player 1 = red
-# Player 2 = yellow
+"""Players vs AlphaBeta file"""
 
 import pygame
 import sys
 import math
 from connect_4.board import Board
 from connect_4.sounds import Sounds
-from monte.tree_creation_try_1 import MonteCarloTreeNode
+from alphabeta.algo import *
 import connect_4.rgbcolors
 
-
-class PlayerAIGame:
-    """Sets up the player for the game"""
+class PlayerAlphaBeta:
 
     def __init__(self, screen):
         pygame.init()
 
         self.board = Board()
+        self.alpha = AlphaBetaAlgo()
         self.game_over = False
         self.turn = 0
 
@@ -42,13 +39,13 @@ class PlayerAIGame:
         pygame.display.update()
         # Wait for 1 second
         pygame.time.wait(1000)
-
+    
     def reset_game(self):
         """When the game is over restart"""
         self.board = Board()
         self.game_over = False
         self.turn = 0
-
+    
     def run(self):
         Sounds.stop()
         Sounds.game_music()
@@ -81,18 +78,29 @@ class PlayerAIGame:
                             self.RADIUS,
                         )
                     pygame.display.update()
-                    
-                    # ai functionn monte carlos
-                    if self.turn == 1:
-                            state = self.board.board.tolist()[::-1]
-                            action = MonteCarloTreeNode.monte_carlo_tree_search(state, 1000, 1)
-                            row,col = MonteCarloTreeNode.get_coordinates(state, action.state)
-                            if self.board.valid_location(col):
-                                row = self.board.open_row(col)
-                                self.board.drop_piece(row, col, self.turn + 1)
+
+                    # ai functionn alpha beta
+                    # if self.turn == 1:
+                    #         state = self.board.board.tolist()[::-1]
+                    #         action = MonteCarloTreeNode.monte_carlo_tree_search(state, 1000, 1)
+                    #         row,col = MonteCarloTreeNode.get_coordinates(state, action.state)
+                    #         if self.board.valid_location(col):
+                    #             row = self.board.open_row(col)
+                    #             self.board.drop_piece(row, col, self.turn + 1)
                             
-                                self.turn += 1
-                                self.turn %= 2
+                                # self.turn += 1
+                                # self.turn %= 2
+                    if self.turn == 1:
+                        self.alpha.alpha_beta(self.board, 5, -math.inf, math.inf, 1)
+
+                        # checking for validation space
+                        if self.board.valid_location(col):
+                            row = self.board.open_row(col)
+                            self.board.drop_piece(row, col, self.turn + 1)
+                        
+                            self.turn += 1
+                            self.turn %= 2
+
                             
                 # handles when the drop piece is dropped when clicked
                 # player 1 and you click button 
