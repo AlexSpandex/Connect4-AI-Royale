@@ -34,7 +34,8 @@ state = [
     [0, 0, 0, 0, 1, 1, 1],
     [0, 0, 0, 1, 2, 1, 2]
 ]
-action = MonteCarloTreeNode.monte_carlo_tree_search(state, 10000, 1)
+
+action = MonteCarloTreeNode.monte_carlo_tree_search(state, 1000, 1)
 for row in action.state:
     print(row)
 
