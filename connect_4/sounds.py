@@ -1,7 +1,6 @@
 """Runs the sounds that are being played"""
 
 import pygame
-import sys
 
 
 class Sounds:
@@ -32,6 +31,18 @@ class Sounds:
                 
             except pygame.error as pygame_error:
                 print(f'Cannot open {"endless_fight.mp3"}')
+                raise SystemExit(1) from pygame_error
+            
+    @staticmethod
+    def battle_music():
+        if True:
+            try:
+                pygame.mixer.music.load("connect_4/music/hard_revenge.mp3")
+                pygame.mixer.music.set_volume(0.5)
+                pygame.mixer.music.play(-1, 0.0, 500)
+                
+            except pygame.error as pygame_error:
+                print(f'Cannot open {"hard_revenge.mp3"}')
                 raise SystemExit(1) from pygame_error
             
     # stops the music

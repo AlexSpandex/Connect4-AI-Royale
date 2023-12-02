@@ -1,4 +1,6 @@
 """Players vs Player file"""
+# Player 1 = red
+# Player 2 = yellow
 
 import pygame
 import sys

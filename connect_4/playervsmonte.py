@@ -94,7 +94,8 @@ class PlayerAIGame:
                                 if self.board.winning_move(self.turn + 1):
                                     self.game_over = True
                                     self.draw_winner(f"Player {self.turn + 1}")
-                                    self.reset_game()  
+                                    self.reset_game()
+                                    
                                 self.turn += 1
                                 self.turn %= 2
                             

@@ -6,7 +6,6 @@ from connect_4.title_screen import TitleScreen
 from connect_4.sounds import Sounds
 from connect_4.player import PlayerGame
 from connect_4.playervsmonte import PlayerAIGame
-from monte.tree_creation_try_1 import MonteCarloTreeNode
 import connect_4.rgbcolors
 
 
@@ -16,7 +15,6 @@ class Game:
     def __init__(self):
         pygame.init()
 
-        self.start_game = False
         self.selected_option = None
         self.title_screen = TitleScreen()
         self.player_game = PlayerGame(self.title_screen.screen)
@@ -47,8 +45,6 @@ class Game:
                             self.player_vs_ai_game.run()
 
                         elif self.title_screen.selected_option == "Player vs AI":
-                            # Implement functionality here
-                            # self.start_game = True
                             self.player_game.run()
 
                         elif self.title_screen.selected_option == "Leaderboard":
