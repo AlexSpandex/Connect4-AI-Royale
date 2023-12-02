@@ -91,7 +91,10 @@ class PlayerAIGame:
                             if self.board.valid_location(col):
                                 row = self.board.open_row(col)
                                 self.board.drop_piece(row, col, self.turn + 1)
-                            
+                                if self.board.winning_move(self.turn + 1):
+                                    self.game_over = True
+                                    self.draw_winner(f"Player {self.turn + 1}")
+                                    self.reset_game()  
                                 self.turn += 1
                                 self.turn %= 2
                             
