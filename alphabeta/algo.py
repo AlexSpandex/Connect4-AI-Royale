@@ -39,37 +39,27 @@ def evaluate(window, piece):
     
     return 0
 
-
 def score_pos(board, piece):
     score = 0
 
     # Score center column
-    center_column = board[:, COL // 2]
+    center_column = board[:, board.shape[1] // 2]
     score += np.count_nonzero(center_column == piece) * 3
 
     # Score Horizontal
-    for r in range(ROW):
-        row_array = board[r, :]
-        score += sum(evaluate(row_array[c:c+4], piece) for c in range(COL - 3))
+    score += np.sum([evaluate(board[r, c:c+4], piece) for r in range(board.shape[0]) for c in range(board.shape[1] - 3)])
 
     # Score Vertical
-    for c in range(COL):
-        col_array = board[:, c]
-        score += sum(evaluate(col_array[r:r+4], piece) for r in range(ROW - 3))
+    score += np.sum([evaluate(board[r:r+4, c], piece) for r in range(board.shape[0] - 3) for c in range(board.shape[1])])
 
     # Score positive sloped diagonal
-    for r in range(ROW - 3):
-        for c in range(COL - 3):
-            window = board[r:r+4, c:c+4].diagonal()
-            score += evaluate(window, piece)
+    score += np.sum([evaluate(np.diag(board[r:r+4, c:c+4]), piece) for r in range(board.shape[0] - 3) for c in range(board.shape[1] - 3)])
 
     # Score negative sloped diagonal
-    for r in range(ROW - 3):
-        for c in range(COL - 3):
-            window = np.fliplr(board[r:r+4, c:c+4]).diagonal()
-            score += evaluate(window, piece)
+    score += np.sum([evaluate(np.diag(np.fliplr(board[r:r+4, c:c+4])), piece) for r in range(board.shape[0] - 3) for c in range(board.shape[1] - 3)])
 
     return score
+
 
 class AlphaBetaAlgo: 
     def alpha_beta(self, depth, alpha, beta, maxPlayer):
