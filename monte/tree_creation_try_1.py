@@ -1,3 +1,4 @@
+from logging import root
 import random
 import math
 
@@ -37,16 +38,23 @@ class MonteCarloTreeNode:
         legal_actions = []
         for column in range(len(self.state[0])):
             if self.state[0][column] == 0:
-                new_state = [row.copy() for row in self.state]
+                new_state = [row.copy() for row in self.state]  # Create a deep copy
                 for row in reversed(range(len(new_state))):
                     if new_state[row][column] == 0:
-                        new_state[row][column] = self.opponent #could be self.current_player state I'm unsure
-                        legal_actions.append(new_state)
+                        new_state[row][column] = self.opponent
+                        legal_actions.append(new_state)  # Append individual actions
                         break  # Break once you've placed a piece in the column
         return legal_actions
 
+
+
+
     def is_terminal_and_win(self):
         return self.is_diagonal() or self.is_horizontal() or self.is_vertical() # or self.no_more_moves()
+    
+    def no_winner(self):
+        lis = [player_in_row_0 for player_in_row_0 in range(len(self.state[0])) if player_in_row_0==0]
+        return len(lis)==0
 
     def is_horizontal(self):
         for column in range(len(self.state[0]) - 3):#'''-3 because to have 4 in a row you need to hae at least 3 other next https://youtu.be/zD-Xuu_Jpe4?si=YDoBGuXPa-a7hked'''
@@ -81,83 +89,99 @@ class MonteCarloTreeNode:
                 ):
                     return True
         return False
-    
-    def selection(self):
-        selected_child = None
-        if not self.is_fully_expanded():
-            selected_child = self.expand_current_node()
-            return selected_child
-        else:
-            #UCB = wins/visits + exploration_factor * sqrt(log(total_visits)/visits)
-            exploration_factor = math.sqrt(2)
-            choosen_ucb_is_max_ucb = float('-inf')
-            for child in self.children:
-                exploitation_factor=(child.wins/(child.visits+1))
-                ucb=exploitation_factor+exploitation_factor*math.sqrt(math.log(self.visits)/(child.visits+1))
-                if ucb > choosen_ucb_is_max_ucb:
-                    choosen_ucb_is_max_ucb = ucb
-                    selected_child = child
-            return selected_child
 
     def expand_current_node(self):
         action = self.untried_actions.pop(0)
-        child_node = MonteCarloTreeNode(action,self.opponent, self)
+        child_node = MonteCarloTreeNode([row.copy() for row in action], self.opponent, self)
         self.children.append(child_node)
         return child_node
+
+
     
     def is_fully_expanded(self):
         return len(self.untried_actions)==0
 
-    def random_choices_when_utc_unknown_called_rollout_simulation(self):
-        current_random_state = self
-        current_player = self.current_player
-        while not current_random_state.is_terminal_and_win():
-            legal_actions = current_random_state.get_legal_actions()
-            if not legal_actions:
-                # Handle the termination condition appropriately, for example, return 0
-                return 0
-            random_action = random.choice(legal_actions)
-            # Ensure that the chosen random action does not exceed the bounds of the game state
-            current_random_state = MonteCarloTreeNode(random_action, current_random_state.opponent, current_random_state)
-            '''for lis in current_random_state.state:
-                print(lis)
-            print(current_random_state.current_player,self.current_player,'\n') 
-        for lis in current_random_state.parent.state:
-            print('parent',lis) '''                 
-        # Check the result after the simulation
-        if current_random_state.current_player == self.current_player:
+    def random_choice(self, possible_actions):
+        #legal_actions = self.untried_actions
+        random_state_or_action = random.choice(possible_actions)
+        # Ensure that the chosen random action does not exceed the bounds of the game state
+        return random_state_or_action
+    
+    def simulate_fake_game_randomly_till_terminal(self):
+        current_node = self
+        while not current_node.is_terminal_and_win() and not current_node.no_winner():
+            possible_actions = current_node.get_legal_actions()
+
+            # Check if there are legal actions available
+            if not possible_actions:
+                break
+
+            action = current_node.random_choice(possible_actions)
+
+            if MonteCarloTreeNode.find_node_if_in_tree(action) is not None:
+                current_node = MonteCarloTreeNode.all_nodes[tuple(map(tuple, action))]
+            else:
+                current_node = MonteCarloTreeNode(action, current_node.opponent, current_node)
+
+        if current_node.is_terminal_and_win() and current_node.current_player == self.opponent:
             return 1
+        elif current_node.no_winner():
+            return 0
         else:
             return -1
 
     
+    def best_uct_score_in_children_of_current_node(self):
+        #UCB = wins/visits + exploration_factor * sqrt(log(total_visits)/visits)
+        exploration_factor = math.sqrt(2)
+        children_uct_values = [(c.wins / c.visits) + exploration_factor * math.sqrt((2 * math.log(self.visits) / c.visits)) for c in self.children]
+        index_of_highest_ucb_of_children = children_uct_values.index(max(children_uct_values))
+        return self.children[index_of_highest_ucb_of_children]
+    
+    def select_node_based_on_uct_unless_all_children_not_expanded_to_use_for_simulation(self):
+        current_node = self
+        while not current_node.is_terminal_and_win() and not current_node.no_winner():
+            if not current_node.is_fully_expanded():
+                return current_node.expand_current_node()
+            else:
+                #picks child with best utc score until node where we left off then it starts expanding and picking randomly
+                current_node = current_node.best_uct_score_in_children_of_current_node()
+        return current_node
+
     def backpropogate_assign_wins_and_losses_after_simulation(self, result):
         current_node = self
         while current_node is not None:
             current_node.visits += 1
+
             if result == 1:
                 current_node.wins += 1
             elif result == -1:
                 current_node.losses += 1
             else:
+                # Handle draws if applicable
                 pass
             current_node = current_node.parent
 
     def monte_carlo_tree_search(initial_state, iterations=1000, current_player=1):
-        # Check if the tree already has a node with the initial state
-        root_node = MonteCarloTreeNode.find_node_if_in_tree(initial_state)
-        # If not, create a new root node with the initial state
-        if root_node is None:
-            root_node = MonteCarloTreeNode(initial_state, current_player=current_player)
-        else:
+        if MonteCarloTreeNode.find_node_if_in_tree(initial_state) != None:
             root_node = MonteCarloTreeNode.all_nodes[tuple(map(tuple, initial_state))]
-        for _ in range(iterations):
-            selected_node = root_node.selection()
-            if not selected_node.is_terminal_and_win():
-                child_node = selected_node.expand_current_node()
-                result = child_node.random_choices_when_utc_unknown_called_rollout_simulation()
-                child_node.backpropogate_assign_wins_and_losses_after_simulation(result)
-        # After the search is complete, choose the best move based on the statistics
-        best_child = max(root_node.children, key=lambda x: x.visits)
-        best_move = best_child.state
-        return best_move
+        else:
+            root_node = MonteCarloTreeNode(initial_state, current_player)
+        for i in range(iterations):
+            choosen_action = root_node.select_node_based_on_uct_unless_all_children_not_expanded_to_use_for_simulation()
+            reward_or_penalty = choosen_action.simulate_fake_game_randomly_till_terminal()
+            choosen_action.backpropogate_assign_wins_and_losses_after_simulation(reward_or_penalty)
+            wins = [c.wins for c in root_node.children]
+            visits = [c.visits for c in root_node.children]
+            print(reward_or_penalty,'wins', wins, 'visits', visits,'root wins', root_node.wins, root_node.visits)
+        avg_score = [c.wins/c.visits for c in root_node.children]
+        best_avg_score_index = avg_score.index(max(avg_score))
+        for row in root_node.children[best_avg_score_index].state:
+            print(row)
+        return root_node.children[best_avg_score_index]
+
+    def get_coordinates(root_state, best_child_state):
+        for column in range(len(root_state[0])):
+            for row in range(len(root_state)):
+                if root_state[row][column] != best_child_state[row][column]:
+                    return row, column

@@ -1,23 +1,4 @@
 from tree_creation_try_1 import MonteCarloTreeNode
-'''import random
-
-node = MonteCarloTreeNode([[0] * 7 for _ in range(6)], 1)
-for row in node.state:
-    print(row, node.current_player)
-print(node.is_vertical())
-for lis in node.get_legal_actions():
-    for row in lis:
-        print(row)
-    print('\n')
-node2 = MonteCarloTreeNode(node.get_legal_actions()[0], node.opponent, node)
-for lis in node2.get_legal_actions():
-    for row in lis:
-        print(row)
-    print('\n')
-random = random.choice(node2.get_legal_actions())
-for row in random:
-    print(row)'''
-# Assume your game state is represented as a 2D list, for example, a Connect Four board.
 node = MonteCarloTreeNode([[0] * 7 for _ in range(6)], 1)
 actions = node.get_legal_actions()
 
@@ -31,15 +12,35 @@ for obj in node.children:
         print(row)
     print('children \n')
 
-node.selection()
+'''node.expand_current_node()
 for obj in node.children:
     for row in obj.state:
         print(row)
     print('children \n')
 
+for lis in node.untried_actions:
+    for row in lis:
+        print(row)
+    print('untried \n')'''
+
 print(node.is_fully_expanded())
-print(node.random_choices_when_utc_unknown_called_rollout_simulation())
-print(MonteCarloTreeNode.find_node_if_in_tree(node.state))
+print(node.simulate_fake_game_randomly_till_terminal())
+#print(node.select_node_based_on_uct_unless_all_children_not_expanded_to_use_for_simulation().state)
+state = [
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 1, 1, 1],
+    [0, 0, 0, 1, 2, 1, 2]
+]
+action = MonteCarloTreeNode.monte_carlo_tree_search(state, 10000, 1)
+for row in action.state:
+    print(row)
+
+row_column = MonteCarloTreeNode.get_coordinates(state, action.state)
+print(row_column)
+'''print(MonteCarloTreeNode.find_node_if_in_tree(node.state))
 root_node = MonteCarloTreeNode.all_nodes[tuple(map(tuple, node.state))]
 print(root_node.current_player)
 
@@ -61,7 +62,7 @@ for row in best_child.state:
 i=0
 for child in root_node.children:
     i=i+1
-    print(i, child.visits, child.visits, child.wins, child.losses)
+    print(i, child.visits, child.visits, child.wins, child.losses)'''
 '''# Create an instance of MonteCarloTreeNode
 root_node = MonteCarloTreeNode(initial_state_of_other_as_player_1, current_player=1)
 
