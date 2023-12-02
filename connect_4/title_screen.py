@@ -10,10 +10,9 @@ class TitleScreen:
     """Sets up the Scene of the game"""
 
     def __init__(self):
-        
         pygame.init()
 
-        self.width, self.height = 800, 600
+        self.width, self.height = 700, 700
         self.screen = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption("Connect 4 AI Royale")
         self.clock = pygame.time.Clock()
@@ -103,7 +102,7 @@ class TitleScreen:
         player_vs_ai_button = pygame.Rect(
             (self.width / 2 - 100, self.height / 2 + 120), (200, 50)
         )
-        
+
         if leaderboard_button.collidepoint(mouse_pos):
             self.selected_option = "Leaderboard"
             print("Leaderboard button pressed")
