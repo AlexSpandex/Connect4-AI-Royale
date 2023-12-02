@@ -1,9 +1,14 @@
 """Runs the sounds that are being played"""
 
+import os.path
 import pygame
 
 
 class Sounds:
+
+    main_dir = os.path.split(os.path.abspath(__file__))[0]
+    data_dir = os.path.join(main_dir, 'Music')
+
     pygame.init()
 
     # plays music
