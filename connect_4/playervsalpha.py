@@ -90,14 +90,19 @@ class PlayerAlphaBeta:
                             
                                 # self.turn += 1
                                 # self.turn %= 2
-                    if self.turn == 1:
-                        self.alpha.alpha_beta(self.board, 5, -math.inf, math.inf, 1)
+                    if self.turn == 1 and not self.game_over:
+                        col, _ = AlphaBetaAlgo().alpha_beta(5, -math.inf, math.inf, True)
 
                         # checking for validation space
                         if self.board.valid_location(col):
                             row = self.board.open_row(col)
                             self.board.drop_piece(row, col, self.turn + 1)
-                        
+
+                            if self.board.winning_move(self.turn + 1):
+                                label = pygame.render("Player 2 wins!!", 1, connect_4.rgbcolors.yellow)
+                                self.screen.blit(label, (40, 10))
+                                self.game_over = True
+
                             self.turn += 1
                             self.turn %= 2
 
