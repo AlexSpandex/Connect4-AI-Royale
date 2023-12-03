@@ -31,7 +31,7 @@ class Board:
 
     def valid_location(self, col):
         """Checks for a valid location if a piece is dropped"""
-        return 0 <= col < self.COLUMN_COUNT and self.board[self.ROW_COUNT - 1][col] == 0
+        return any(self.board[:, col] == 0)
 
     def open_row(self, col):
         """Checks for the next open row"""
@@ -90,6 +90,14 @@ class Board:
                     and self.board[r - 3][c + 3] == piece
                 ):
                     return True
+    
+    def is_terminal(self):
+        """checks if either the player or AI or game is not done"""
+        return all([
+            not self.winning_move(1).any(),
+            not self.winning_move(2).any(),
+            len(self.get_valid_locations()) == 0
+        ])
                 
     def draw_board(self, screen, RADIUS):
         """Draws the board on screen"""

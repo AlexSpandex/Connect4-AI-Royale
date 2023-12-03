@@ -79,32 +79,37 @@ class PlayerAlphaBeta:
                         )
                     pygame.display.update()
 
-                    # ai functionn alpha beta
-                    # if self.turn == 1:
-                    #         state = self.board.board.tolist()[::-1]
-                    #         action = MonteCarloTreeNode.monte_carlo_tree_search(state, 1000, 1)
-                    #         row,col = MonteCarloTreeNode.get_coordinates(state, action.state)
-                    #         if self.board.valid_location(col):
-                    #             row = self.board.open_row(col)
-                    #             self.board.drop_piece(row, col, self.turn + 1)
-                            
-                                # self.turn += 1
-                                # self.turn %= 2
-                    if self.turn == 1 and not self.game_over:
-                        col, _ = AlphaBetaAlgo().alpha_beta(5, -math.inf, math.inf, True)
+            
+                if self.turn == 1 and not self.game_over:
+                    try:
+                        # Get AI's move
+                        col = self.alpha.get_best_move(self.board, depth=3)  # Assuming get_best_move returns a valid column
 
-                        # checking for validation space
+                        # Checking for validation space
                         if self.board.valid_location(col):
                             row = self.board.open_row(col)
+
+                            # Drop piece on the board
                             self.board.drop_piece(row, col, self.turn + 1)
 
+                            # Draw the board after the AI's move
+                            self.draw_board()
+
+                            # Check for a win
                             if self.board.winning_move(self.turn + 1):
                                 label = pygame.render("Player 2 wins!!", 1, connect_4.rgbcolors.yellow)
                                 self.screen.blit(label, (40, 10))
                                 self.game_over = True
 
+                            # Switch to the player's turn
                             self.turn += 1
                             self.turn %= 2
+
+                            pygame.display.update()
+
+                    except Exception as e:
+                        print(f"Error: {e}")
+
 
                             
                 # handles when the drop piece is dropped when clicked
@@ -124,6 +129,8 @@ class PlayerAlphaBeta:
 
                         self.turn += 1
                         self.turn %= 2
+                        
+                        pygame.time.wait(1000)
 
                     pygame.display.update()
 

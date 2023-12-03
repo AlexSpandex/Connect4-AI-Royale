@@ -1,5 +1,6 @@
 import numpy as np
 from connect_4.board import Board
+from random import shuffle
 
 ROW = 6
 COL = 7
@@ -8,11 +9,22 @@ PLAYER = 1
 AI = 2
 game_board = Board()
 
-def is_terminal(board):
-    """checks if either the player or AI or game is not done"""
-    return game_board.winning_move(PLAYER) or game_board.winning_move(AI) or len(get_valid_locations(board)) == 0
+# def is_terminal(self):
+#         """checks if either the player or AI or game is not done"""
+#         return all([
+#             not self.winning_move(1).any(),
+#             not self.winning_move(2).any(),
+#             len(self.get_valid_locations()) == 0
+#         ])
+        
+def state_utility(self):
+    if any(self.winning_move(PLAYER)) or self.winning_move(PLAYER) is None:
+        return -1
+    if any(self.winning_move(AI)) or self.winning_move(AI) is None:
+        return 1
+    return 0
 
-def get_valid_locations(board):
+def get_valid_locations(self):
     return [column for column in range(COL) if game_board.valid_location(column)]
 
 def evaluate(window, piece):
@@ -60,42 +72,62 @@ def score_pos(board, piece):
 
     return score
 
+def get_successors(self, current_player):
+    successors = []
 
-class AlphaBetaAlgo: 
-    def alpha_beta(self, depth, alpha, beta, maxPlayer):
-        valid_loc = get_valid_locations(game_board.board)
-        is_terminal_node = is_terminal(game_board.board)
+    # Iterate over all columns to find valid moves
+    for col in range(self.COLUMN_COUNT):
+        if self.valid_location(col):
+            # Create a copy of the current board to simulate the move
+            successor_board = game_board.board
+            successor_board.board = self.board.copy()
 
-        if depth == 0:
-            return (None, score_pos(game_board.board, AI))
+            # Find the open row in the selected column
+            row = successor_board.open_row(col)
 
-        if is_terminal_node:
-            if game_board.winning_move(AI):
-                return (None, 999999)
-            elif game_board.winning_move(PLAYER):
-                return (None, -999999)
-            else:
-                return (None, 0)
+            # Make the move for the current player
+            successor_board.drop_piece(row, col, current_player)
 
-        best_score = float('-inf') if maxPlayer else float('inf')
+            successors.append(successor_board)
+
+    return successors
+
+class AlphaBetaAlgo:
+    game_board = Board()
+    def minimax_alpha_beta(self, board, depth, alpha=float('-inf'), beta=float('inf'), maximizing_player=True):
+        if depth == 0 or board.is_terminal():
+            return self.state_utility(board)
+
+        if maximizing_player:
+            v = float('-inf')
+            for successor in board.get_successors(2):  # Assuming 2 represents the AI
+                v = max(v, self.minimax_alpha_beta(successor, depth - 1, alpha, beta, False))
+                alpha = max(alpha, v)
+                if alpha >= beta:
+                    break
+            return v
+        else:
+            v = float('inf')
+            for successor in board.get_successors(1):  
+                v = min(v, self.minimax_alpha_beta(successor, depth - 1, alpha, beta, True))
+                beta = min(beta, v)
+                if alpha >= beta:
+                    break
+            return v
+
+    def get_best_move(self, board, depth):
         best_move = None
+        best_score = float('-inf')
 
-        for col in valid_loc:
-            row = game_board.open_row(col)
-            game_board.drop_piece(row, col, AI if maxPlayer else PLAYER)
+        for col in range(board.COLUMN_COUNT):
+            if board.valid_location(col):
+                row = board.open_row(col)
+                board.drop_piece(row, col, 2)  # Assuming 2 represents the AI
+                score = self.minimax_alpha_beta(board, depth - 1, float('-inf'), float('inf'), False)
+                board.board[row][col] = 0  # Undo the move
 
-            new_score = self.alpha_beta(depth - 1, alpha, beta, not maxPlayer)[1]
+                if score > best_score:
+                    best_score = score
+                    best_move = col
 
-            if maxPlayer and new_score > best_score:
-                best_score = new_score
-                best_move = col
-                alpha = max(alpha, best_score)
-            elif not maxPlayer and new_score < best_score:
-                best_score = new_score
-                best_move = col
-                beta = min(beta, best_score)
-                
-            if alpha >= beta:
-                break  # Prune the branch
-
-        return best_move, best_score
+        return best_move
