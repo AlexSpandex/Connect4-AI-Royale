@@ -101,7 +101,7 @@ class PlayerAlpha:
                         self.turn %= 2
 
                     # prints the board game onto the terminal
-                    self.board.print_board()
+                    # self.board.print_board()
                     self.draw_board()
         
             # ai functionn alpha beta
@@ -118,7 +118,7 @@ class PlayerAlpha:
                         self.game_over = True
                         self.reset_game()
 
-                    self.board.print_board()
+                    # self.board.print_board()
                     self.draw_board()
                     
                     self.turn += 1
@@ -127,4 +127,3 @@ class PlayerAlpha:
             # Draw the board and update the display continuously
             self.draw_board()
             pygame.display.update()
-
