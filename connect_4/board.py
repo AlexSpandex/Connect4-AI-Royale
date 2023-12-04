@@ -14,12 +14,10 @@ class Board:
         self.ROW_COUNT = 6
         self.COLUMN_COUNT = 7
         self.board = np.zeros((self.ROW_COUNT, self.COLUMN_COUNT))
-        
+
         self.SQUARESIZE = 100
         self.width = self.COLUMN_COUNT * self.SQUARESIZE
         self.height = (self.ROW_COUNT + 1) * self.SQUARESIZE
-
-        # self.size = (self.width, self.height)
 
     def create_board(self):
         """Creating the board layout"""
@@ -31,12 +29,14 @@ class Board:
 
     def valid_location(self, col):
         """Checks for a valid location if a piece is dropped"""
-        return 0 <= col < self.COLUMN_COUNT and self.board[self.ROW_COUNT - 1][col] == 0
+        return isinstance(col, int) and 0 <= col < self.COLUMN_COUNT and self.board[self.ROW_COUNT - 1, col] == 0
+        # return 0 <= col < self.COLUMN_COUNT and self.board[self.ROW_COUNT - 1][col] == 0
 
     def open_row(self, col):
         """Checks for the next open row"""
         for r in range(self.ROW_COUNT):
-            if self.board[r][col] == 0:
+            ex = (self.board[r][col] == 0).all()
+            if ex:
                 return r
 
     def print_board(self):
@@ -46,7 +46,7 @@ class Board:
 
     def winning_move(self, piece):
         """Checks for the winning piece"""
-        
+
         # checks for horizontal
         for c in range(self.COLUMN_COUNT - 3):
             for r in range(self.ROW_COUNT):
@@ -57,7 +57,7 @@ class Board:
                     and self.board[r][c + 3] == piece
                 ):
                     return True
-                
+
         # checks for vertical
         for c in range(self.COLUMN_COUNT):
             for r in range(self.ROW_COUNT - 3):
@@ -68,7 +68,7 @@ class Board:
                     and self.board[r + 3][c] == piece
                 ):
                     return True
-                
+
         # checks for right diagnol
         for c in range(self.COLUMN_COUNT - 3):
             for r in range(self.ROW_COUNT - 3):
@@ -79,7 +79,7 @@ class Board:
                     and self.board[r + 3][c + 3] == piece
                 ):
                     return True
-                
+
         # checks for left diagnol
         for c in range(self.COLUMN_COUNT - 3):
             for r in range(3, self.ROW_COUNT):
@@ -90,7 +90,7 @@ class Board:
                     and self.board[r - 3][c + 3] == piece
                 ):
                     return True
-                
+
     def draw_board(self, screen, RADIUS):
         """Draws the board on screen"""
         # board drawing
@@ -111,7 +111,9 @@ class Board:
                     connect_4.rgbcolors.light_blue,
                     (
                         int(c * self.SQUARESIZE + self.SQUARESIZE / 2),
-                        int(r * self.SQUARESIZE + self.SQUARESIZE + self.SQUARESIZE / 2),
+                        int(
+                            r * self.SQUARESIZE + self.SQUARESIZE + self.SQUARESIZE / 2
+                        ),
                     ),
                     RADIUS,
                 )
@@ -125,7 +127,8 @@ class Board:
                         connect_4.rgbcolors.red,
                         (
                             int(c * self.SQUARESIZE + self.SQUARESIZE / 2),
-                            screen.get_height() - int(r * self.SQUARESIZE + self.SQUARESIZE / 2),
+                            screen.get_height()
+                            - int(r * self.SQUARESIZE + self.SQUARESIZE / 2),
                         ),
                         RADIUS,
                     )
@@ -135,7 +138,8 @@ class Board:
                         connect_4.rgbcolors.yellow,
                         (
                             int(c * self.SQUARESIZE + self.SQUARESIZE / 2),
-                            screen.get_height() - int(r * self.SQUARESIZE + self.SQUARESIZE / 2),
+                            screen.get_height()
+                            - int(r * self.SQUARESIZE + self.SQUARESIZE / 2),
                         ),
                         RADIUS,
                     )

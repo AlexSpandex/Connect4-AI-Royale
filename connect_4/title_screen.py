@@ -41,8 +41,8 @@ class TitleScreen:
 
         # creating the text for the buttons
         leaderboard_text = font.render("Leaderboard", True, connect_4.rgbcolors.white)
-        ai_vs_ai_text = font.render("AI vs AI", True, connect_4.rgbcolors.white)
-        player_vs_ai_text = font.render("Player vs AI", True, connect_4.rgbcolors.white)
+        ai_vs_ai_text = font.render("Player Vs Monte", True, connect_4.rgbcolors.white)
+        player_vs_ai_text = font.render("Player vs Alpha", True, connect_4.rgbcolors.white)
 
         # Get text dimensions
         leader_width, leader_height = leaderboard_text.get_size()
