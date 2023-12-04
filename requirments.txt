@@ -1,3 +1,2 @@
-Package Version
-------- -------
-pygame  2.5.2
+numpy==1.26.2
+pygame==2.5.2
