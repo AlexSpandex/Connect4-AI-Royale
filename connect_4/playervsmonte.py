@@ -25,7 +25,6 @@ class PlayerAIGame:
         self.width = self.board.COLUMN_COUNT * self.SQUARESIZE
         self.height = (self.board.ROW_COUNT + 1) * self.SQUARESIZE
 
-        self.size = (800, 600)
         self.RADIUS = int(self.SQUARESIZE / 2 - 5)
 
         self.screen = screen
