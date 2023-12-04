@@ -119,6 +119,6 @@ class PlayerAlpha:
                     self.turn += 1
                     self.turn %= 2
 
-            # # Draw the board and update the display continuously
+            # Draw the board and update the display continuously
             self.draw_board()
             pygame.display.update()

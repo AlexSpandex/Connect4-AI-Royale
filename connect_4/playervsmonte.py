@@ -53,6 +53,7 @@ class PlayerAIGame:
     def run(self):
         Sounds.stop()
         Sounds.game_music()
+
         while not self.game_over:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -74,30 +75,8 @@ class PlayerAIGame:
                             (posx, int(self.SQUARESIZE / 2)),
                             self.RADIUS,
                         )
-                    else:
-                        pygame.draw.circle(
-                            self.screen,
-                            connect_4.rgbcolors.yellow,
-                            (posx, int(self.SQUARESIZE / 2)),
-                            self.RADIUS,
-                        )
                     pygame.display.update()
-                    
-                    # ai functionn monte carlos
-                    if self.turn == 1:
-                            state = self.board.board.tolist()[::-1]
-                            action = MonteCarloTreeNode.monte_carlo_tree_search(state, 1000, 1)
-                            row,col = MonteCarloTreeNode.get_coordinates(state, action.state)
-                            if self.board.valid_location(col):
-                                row = self.board.open_row(col)
-                                self.board.drop_piece(row, col, self.turn + 1)
-                                if self.board.winning_move(self.turn + 1):
-                                    self.game_over = True
-                                    self.draw_winner(f"Player {self.turn + 1}")
-                                    self.reset_game()
-                                    
-                                self.turn += 1
-                                self.turn %= 2
+                
                             
                 # handles when the drop piece is dropped when clicked
                 # player 1 and you click button 
@@ -116,8 +95,27 @@ class PlayerAIGame:
 
                         self.turn += 1
                         self.turn %= 2
+                        
+                    self.draw_board()
+                    
+            # ai functionn monte carlos
+            if self.turn == 1:
+                    state = self.board.board.tolist()[::-1]
+                    action = MonteCarloTreeNode.monte_carlo_tree_search(state, 1000, 1)
+                    row,col = MonteCarloTreeNode.get_coordinates(state, action.state)
+                    if self.board.valid_location(col):
+                        row = self.board.open_row(col)
+                        self.board.drop_piece(row, col, self.turn + 1)
+                        if self.board.winning_move(self.turn + 1):
+                            self.game_over = True
+                            self.draw_winner(f"Player {self.turn + 1}")
+                            self.reset_game()
 
-                    pygame.display.update()
+                        self.draw_board()
 
-                # Draw the board and update the display continuously
-                self.draw_board()
+                        self.turn += 1
+                        self.turn %= 2
+
+            # Draw the board and update the display continuously
+            self.draw_board()
+            pygame.display.update()
