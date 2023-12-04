@@ -8,7 +8,7 @@ import sys
 import math
 from connect_4.board import Board
 from connect_4.sounds import Sounds
-from connect_4.alphabeta import AlphaBeta
+from alphabeta.alphabeta import AlphaBeta
 import connect_4.rgbcolors
 
 
@@ -23,6 +23,12 @@ class PlayerAlpha:
 
         self.game_over = False
         self.turn = 0
+        
+        self.player = 0
+        self.player_piece = 1
+        
+        self.ai_player = 1
+        self.ai_piece = 2
 
         self.SQUARESIZE = 100
         self.width = self.board.COLUMN_COUNT * self.SQUARESIZE
@@ -38,8 +44,15 @@ class PlayerAlpha:
         self.board.draw_board(self.screen, self.RADIUS)
 
     def draw_winner(self, winner):
-        """Display the winning message"""
-        text = self.font.render(f"{winner} wins!", True, connect_4.rgbcolors.black)
+        """Display the winning message with color coding"""
+        if winner == f"Player {self.player_piece}":
+            text_color = connect_4.rgbcolors.red
+        elif winner == f"Player {self.ai_piece}":
+            text_color = connect_4.rgbcolors.yellow
+        else:
+            text_color = connect_4.rgbcolors.black  # Default color
+
+        text = self.font.render(f"{winner} wins!", True, text_color)
         text_rect = text.get_rect(center=(self.width // 2, self.SQUARESIZE // 2))
         self.screen.blit(text, text_rect)
         pygame.display.update()
@@ -56,7 +69,7 @@ class PlayerAlpha:
     def run(self):
         Sounds.stop()
         Sounds.game_music()
-
+        
         while not self.game_over:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -70,60 +83,66 @@ class PlayerAlpha:
                         (0, 0, self.width, self.SQUARESIZE),
                     )
                     posx = event.pos[0]
-
-                    if self.turn == 0:
+                    
+                    # player 1 tun
+                    if self.turn == self.player:
                         pygame.draw.circle(
                             self.screen,
                             connect_4.rgbcolors.red,
                             (posx, int(self.SQUARESIZE / 2)),
                             self.RADIUS,
                         )
-                    pygame.display.update()
+                pygame.display.update()
 
                 # handles when the drop piece is dropped when clicked
                 # player 1 and you click button 
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    posx = event.pos[0]
-                    col = int(math.floor(posx / self.SQUARESIZE))
+                    if self.turn == self.player:
+                        posx = event.pos[0]
+                        col = int(math.floor(posx / self.SQUARESIZE))
 
-                    # player taking turns
-                    if self.board.valid_location(col):
-                        row = self.board.open_row(col)
-                        self.board.drop_piece(row, col, self.turn + 1)
+                        # player taking turns
+                        if self.board.valid_location(col):
+                            row = self.board.open_row(col)
+                            self.board.drop_piece(row, col, self.player_piece)
+                            
+                            if self.board.winning_move(self.player_piece):
+                                self.game_over = True
 
-                        if self.board.winning_move(self.turn + 1):
-                            self.draw_winner(f"Player {self.turn + 1}")
-                            self.game_over = True
+                            self.turn += 1
+                            self.turn %= 2
 
-                            self.reset_game()
-
-                        self.turn += 1
-                        self.turn %= 2
-
-                    # prints the board game onto the terminal
-                    # self.board.print_board()
-                    self.draw_board()
+                        # prints the board game onto the terminal
+                        # self.board.print_board()
+                        self.draw_board()
         
             # ai functionn alpha beta
-            if self.turn == 1:
+            if self.turn == self.ai_player:
                 ai_move = self.ai.get_best_move()
                 ai_row = self.board.open_row(ai_move)
-
+                
                 if self.board.valid_location(ai_move):
                     row = self.board.open_row(ai_move)
-                    self.board.drop_piece(ai_row, ai_move, self.turn + 1)
-
-                    if self.board.winning_move(self.turn + 1):
-                        self.draw_winner(f"Player {self.turn + 1}")
+                    self.board.drop_piece(ai_row, ai_move, self.ai_piece)
+                    
+                    if self.board.winning_move(self.ai_piece):
                         self.game_over = True
-                        self.reset_game()
 
                     # self.board.print_board()
                     self.draw_board()
                     
                     self.turn += 1
                     self.turn %= 2
-
+                
+            # Display winning message after the game is over
+            if self.board.winning_move(self.player_piece):
+                self.draw_winner(f"Player {self.player_piece}")
+                self.reset_game()
+                
+            elif self.board.winning_move(self.ai_piece):
+                self.draw_winner(f"Player {self.ai_piece}")
+                self.reset_game()
+                    
+            pygame.display.update()
             # Draw the board and update the display continuously
             self.draw_board()
-            pygame.display.update()

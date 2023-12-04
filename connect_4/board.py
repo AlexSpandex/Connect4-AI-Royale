@@ -13,7 +13,7 @@ class Board:
 
         self.ROW_COUNT = 6
         self.COLUMN_COUNT = 7
-        self.board = np.zeros((self.ROW_COUNT, self.COLUMN_COUNT))
+        self.board = self.create_board()
 
         self.SQUARESIZE = 100
         self.width = self.COLUMN_COUNT * self.SQUARESIZE
