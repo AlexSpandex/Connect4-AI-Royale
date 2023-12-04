@@ -1,6 +1,8 @@
 # Player 1 = red
 # Player 2 = yellow
 
+"""Players vs AlphaBeta file"""
+
 import pygame
 import sys
 import math
@@ -18,6 +20,7 @@ class PlayerAlpha:
 
         self.board = Board()
         self.ai = AlphaBeta(self.board)
+
         self.game_over = False
         self.turn = 0
 
@@ -26,6 +29,7 @@ class PlayerAlpha:
         self.height = (self.board.ROW_COUNT + 1) * self.SQUARESIZE
 
         self.RADIUS = int(self.SQUARESIZE / 2 - 5)
+
         self.screen = screen
         self.font = pygame.font.Font(None, 36)
 
@@ -90,6 +94,7 @@ class PlayerAlpha:
                         if self.board.winning_move(self.turn + 1):
                             self.draw_winner(f"Player {self.turn + 1}")
                             self.game_over = True
+
                             self.reset_game()
 
                         self.turn += 1
@@ -122,3 +127,4 @@ class PlayerAlpha:
             # # Draw the board and update the display continuously
             self.draw_board()
             pygame.display.update()
+
