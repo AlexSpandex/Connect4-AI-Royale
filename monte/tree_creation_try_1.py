@@ -88,6 +88,16 @@ class MonteCarloTreeNode:
                     self.state[row+3][column+3] == self.current_player
                 ):
                     return True
+                # checks for left diagnol
+        for column in range(len(self.state[0])-3):
+            for row in range(3, len(self.state)):
+                if (
+                    self.state[row][column] == self.current_player
+                    and self.state[row - 1][column + 1] == self.current_player
+                    and self.state[row - 2][column + 2] == self.current_player
+                    and self.state[row - 3][column + 3] == self.current_player
+                ):
+                    return True
         return False
 
     def expand_current_node(self):
@@ -176,8 +186,8 @@ class MonteCarloTreeNode:
             print(reward_or_penalty,'wins', wins, 'visits', visits,'root wins', root_node.wins, root_node.visits)
         avg_score = [c.wins/c.visits for c in root_node.children]
         best_avg_score_index = avg_score.index(max(avg_score))
-        for row in root_node.children[best_avg_score_index].state:
-            print(row)
+        # for row in root_node.children[best_avg_score_index].state:
+        #     print(row)
         return root_node.children[best_avg_score_index]
 
     def get_coordinates(root_state, best_child_state):
