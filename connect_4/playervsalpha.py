@@ -88,8 +88,8 @@ class PlayerAlpha:
                         self.board.drop_piece(row, col, self.turn + 1)
 
                         if self.board.winning_move(self.turn + 1):
-                            self.game_over = True
                             self.draw_winner(f"Player {self.turn + 1}")
+                            self.game_over = True
                             self.reset_game()
 
                         self.turn += 1
@@ -103,12 +103,14 @@ class PlayerAlpha:
             if self.turn == 1:
                 ai_move = self.ai.get_best_move()
                 ai_row = self.board.open_row(ai_move)
+
                 if self.board.valid_location(ai_move):
                     row = self.board.open_row(ai_move)
                     self.board.drop_piece(ai_row, ai_move, self.turn + 1)
+
                     if self.board.winning_move(self.turn + 1):
-                        self.game_over = True
                         self.draw_winner(f"Player {self.turn + 1}")
+                        self.game_over = True
                         self.reset_game()
 
                     self.board.print_board()
