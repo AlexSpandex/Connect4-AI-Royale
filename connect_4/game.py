@@ -50,6 +50,7 @@ class Game:
                 if (
                     event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE
                 ) or event.type == pygame.QUIT:
+                    print("ESC button pressed-Exiting...")
                     pygame.quit()
                     sys.exit()
 

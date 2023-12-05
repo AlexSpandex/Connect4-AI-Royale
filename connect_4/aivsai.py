@@ -133,12 +133,16 @@ class Ai:
         # initialize game sounds
         Sounds.stop()
         Sounds.battle_music()
+        # draws a border to now show background image
+        pygame.draw.rect(self.screen, connect_4.rgbcolors.light_blue, (0,0, self.width, self.board.square_size))
+
 
         while not self.game_over:
             for event in pygame.event.get():
                 if (
                     event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE
                 ) or event.type == pygame.QUIT:
+                    print("ESC button pressed-Exiting...")
                     pygame.quit()
                     sys.exit()
 
