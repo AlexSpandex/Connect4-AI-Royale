@@ -136,19 +136,20 @@ class PlayerAIGame:
         if self.turn == self.ai_player:
             state = self.board.board.tolist()[::-1]
             action = MonteCarloTreeNode.monte_carlo_tree_search(state, 1000, 1)
-            row, col = MonteCarloTreeNode.get_coordinates(state, action.state)
 
-            if self.board.valid_location(col):
-                row = self.board.open_row(col)
-                self.board.drop_piece(row, col, self.ai_piece)
+            # Check if action is not None
+            if action is not None:
+                row, col = MonteCarloTreeNode.get_coordinates(state, action.state)
 
-                if self.board.winning_move(self.ai_piece):
-                    self.game_over = True
+                if self.board.valid_location(col):
+                    row = self.board.open_row(col)
+                    self.board.drop_piece(row, col, self.ai_piece)
 
-                self.draw_board()
+                    if self.board.winning_move(self.ai_piece):
+                        self.game_over = True
 
-                self.turn += 1
-                self.turn %= 2
+                    self.switch_turn()
+                    self.draw_board()
 
     def run(self):
         """this handles the game logic"""

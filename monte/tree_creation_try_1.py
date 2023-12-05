@@ -184,7 +184,7 @@ class MonteCarloTreeNode:
                 choosen_action.backpropogate_assign_wins_and_losses_after_simulation(reward_or_penalty)
                 wins = [c.wins for c in root_node.children]
                 visits = [c.visits for c in root_node.children]
-                print(reward_or_penalty,'wins', wins, 'visits', visits,'root wins', root_node.wins, root_node.visits)
+                # print(reward_or_penalty,'wins', wins, 'visits', visits,'root wins', root_node.wins, root_node.visits)
             avg_score = [c.wins/c.visits for c in root_node.children]
             best_avg_score_index = avg_score.index(max(avg_score))
             # for row in root_node.children[best_avg_score_index].state:
