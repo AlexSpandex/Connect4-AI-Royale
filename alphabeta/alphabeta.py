@@ -126,7 +126,6 @@ class AlphaBeta:
         Returns:
         - tuple: (Best column for the current player, corresponding value)
         """
-
         # get valid locations for the current state
         valid_locations = self.get_valid_locations()
         # check if the current state is a terminal node

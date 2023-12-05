@@ -1,43 +1,44 @@
 # Player 1 = red
 # Player 2 = yellow
 
-"""Players vs Monte file"""
+"""Players vs AlphaBeta file"""
 
-import math
 import sys
 import pygame
 from connect_4.board import Board
 from connect_4.sounds import Sounds
+from alphabeta.alphabeta import AlphaBeta
 from monte.tree_creation_try_1 import MonteCarloTreeNode
 import connect_4.rgbcolors
 
 
-class PlayerAIGame:
+class Ai:
     """Sets up the player for the game"""
 
     def __init__(self, screen):
         """
-        initialize the PlayerAIGame instance.
+        initialize the PlayerAlpha instance.
 
         Parameters:
         - screen (pygame.Surface): the pygame screen for rendering.
         """
         pygame.init()
-
+        
         # initialize the game components
         self.board = Board()
+        self.ai_alpha = AlphaBeta(self.board)
 
         # game state variables
         self.game_over = False
         self.turn = 0
 
-        # player 1 (Human)
-        self.player = 0
-        self.player_piece = 1
+        # player 1 (AI)
+        self.ai_player_1 = 0
+        self.ai_player_1_piece = 1
 
         # player 2 (AI)
-        self.ai_player = 1
-        self.ai_piece = 2
+        self.ai_player_2 = 1
+        self.ai_player_2_piece = 2
 
         # board dimensions
         self.width = self.board.column_count * self.board.square_size
@@ -51,14 +52,14 @@ class PlayerAIGame:
         self.font = pygame.font.Font(None, 36)
 
     def draw_board(self):
-        """calls the drawboard function from Board Class"""
-        self.board.draw_board(self.screen, self.radius)
+            """calls the drawboard function from Board Class"""
+            self.board.draw_board(self.screen, self.radius)
 
     def draw_winner(self, winner):
         """display the winning message with color coding"""
-        if winner == f"Player {self.player_piece}":
+        if winner == f"Player {self.ai_player_1_piece}":
             text_color = connect_4.rgbcolors.red
-        elif winner == f"Player {self.ai_piece}":
+        elif winner == f"Player {self.ai_player_2_piece}":
             text_color = connect_4.rgbcolors.yellow
         else:
             text_color = connect_4.rgbcolors.black  # Default color
@@ -76,64 +77,39 @@ class PlayerAIGame:
         resets the game by initializing a new Board and AlphaBeta instance.
         """
         self.board = Board()
+        self.ai_alpha = AlphaBeta(self.board)
         self.game_over = False
         self.turn = 0
+
+        # Clear the winner message from the screen
+        self.screen.fill(connect_4.rgbcolors.grey16)
+        self.draw_board()
+        pygame.display.update()
 
     def switch_turn(self):
         """switches the turn between players."""
         self.turn += 1
         self.turn %= 2
 
-    def handle_mouse_motion(self, event):
-        """
-        handles mouse events (e.g., motion, button click).
-        """
 
-        # highlight the column where the player can drop a piece
-        pygame.draw.rect(
-            self.screen,
-            connect_4.rgbcolors.light_blue,
-            (0, 0, self.width, self.board.square_size),
-        )
-        posx = event.pos[0]
+    def handle_alpha_beta_ai(self):
+        """handles the AI player's move using the Alpha-Beta Pruning algorithm"""
+        if self.turn == self.ai_player_1:
+            ai_move = self.ai_alpha.get_best_move()
+            ai_row = self.board.open_row(ai_move)
 
-        # draw the player's piece on the highlighted column
-        if self.turn == self.player:
-            pygame.draw.circle(
-                self.screen,
-                connect_4.rgbcolors.red,
-                (posx, int(self.board.square_size / 2)),
-                self.radius,
-            )
-        pygame.display.update()
+            if self.board.valid_location(ai_move):
+                self.board.drop_piece(ai_row, ai_move, self.ai_player_1_piece)
 
-    def handle_mouse_button_down(self, event):
-        """handles mouse motion event"""
-        if self.turn == self.player:
-            posx = event.pos[0]
-            col = int(math.floor(posx / self.board.square_size))
-
-            if self.board.valid_location(col):
-                row = self.board.open_row(col)
-                self.board.drop_piece(row, col, self.player_piece)
-
-                if self.board.winning_move(self.player_piece):
+                if self.board.winning_move(self.ai_player_1_piece):
                     self.game_over = True
 
                 self.switch_turn()
                 self.draw_board()
 
-    def handle_mouse_event(self, event):
-        """handles mouse events (e.g., motion, button click)."""
-        if event.type == pygame.MOUSEMOTION:
-            self.handle_mouse_motion(event)
-
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            self.handle_mouse_button_down(event)
-
     def handle_monte_carlo_ai(self):
         """handles the AI player's move using the monte carlo algorithm"""
-        if self.turn == self.ai_player:
+        if self.turn == self.ai_player_2:
             state = self.board.board.tolist()[::-1]
             action = MonteCarloTreeNode.monte_carlo_tree_search(state, 1000, 1)
 
@@ -143,20 +119,20 @@ class PlayerAIGame:
 
                 if self.board.valid_location(col):
                     row = self.board.open_row(col)
-                    self.board.drop_piece(row, col, self.ai_piece)
+                    self.board.drop_piece(row, col, self.ai_player_2_piece)
 
-                    if self.board.winning_move(self.ai_piece):
+                    if self.board.winning_move(self.ai_player_2_piece):
                         self.game_over = True
 
                     self.switch_turn()
                     self.draw_board()
 
     def run(self):
-        """this handles the game logic"""
+        """This handles the game logic"""
 
         # initialize game sounds
         Sounds.stop()
-        Sounds.game_music()
+        Sounds.battle_music()
 
         while not self.game_over:
             for event in pygame.event.get():
@@ -165,16 +141,22 @@ class PlayerAIGame:
                 ) or event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-                self.handle_mouse_event(event)
-            self.handle_monte_carlo_ai()
 
-            # Display winning message after the game is over
-            if self.board.winning_move(self.player_piece):
-                self.draw_winner(f"Player {self.player_piece}")
+                # Implement alpha-beta vs monte carlo
+                if self.turn == self.ai_player_1:
+                    # AI Player 1's turn (Alpha-Beta)
+                    self.handle_alpha_beta_ai()
+                elif self.turn == self.ai_player_2:
+                    # AI Player 2's turn (Monte Carlo)
+                    self.handle_monte_carlo_ai()
+
+            # Check for a winner or a draw
+            if self.board.winning_move(self.ai_player_1_piece):
+                self.draw_winner(f"Player {self.ai_player_1_piece}")
                 self.reset_game()
 
-            elif self.board.winning_move(self.ai_piece):
-                self.draw_winner(f"Player {self.ai_piece}")
+            elif self.board.winning_move(self.ai_player_2_piece):
+                self.draw_winner(f"Player {self.ai_player_2_piece}")
                 self.reset_game()
 
             # Draw the board and update the display continuously

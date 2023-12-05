@@ -157,7 +157,10 @@ class PlayerAlpha:
 
         while not self.game_over:
             for event in pygame.event.get():
-                if event.type == pygame.QUIT:
+                if (
+                    event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE
+                ) or event.type == pygame.QUIT:
+                    pygame.quit()
                     sys.exit()
                 self.handle_mouse_event(event)
             self.handle_alpha_beta_ai()
