@@ -22,6 +22,8 @@ class PlayerAlpha:
         Parameters:
         - screen (pygame.Surface): the pygame screen for rendering.
         """
+        pygame.init()
+        
         # initialize the game components
         self.board = Board()
         self.ai_alpha = AlphaBeta(self.board)
@@ -50,11 +52,11 @@ class PlayerAlpha:
         self.font = pygame.font.Font(None, 36)
 
     def draw_board(self):
-        """Calls the drawboard function from Board Class"""
+        """calls the drawboard function from Board Class"""
         self.board.draw_board(self.screen, self.radius)
 
     def draw_winner(self, winner):
-        """Display the winning message with color coding"""
+        """display the winning message with color coding"""
         if winner == f"Player {self.player_piece}":
             text_color = connect_4.rgbcolors.red
         elif winner == f"Player {self.ai_piece}":
@@ -72,7 +74,7 @@ class PlayerAlpha:
 
     def reset_game(self):
         """
-        Resets the game by initializing a new Board and AlphaBeta instance.
+        resets the game by initializing a new Board and AlphaBeta instance.
         """
         self.board = Board()
         self.ai_alpha = AlphaBeta(self.board)
@@ -80,13 +82,13 @@ class PlayerAlpha:
         self.turn = 0
 
     def switch_turn(self):
-        """Switches the turn between players."""
+        """switches the turn between players."""
         self.turn += 1
         self.turn %= 2
 
     def handle_mouse_motion(self, event):
         """
-        Handles mouse events (e.g., motion, button click).
+        handles mouse events (e.g., motion, button click).
         """
 
         # highlight the column where the player can drop a piece
@@ -108,7 +110,7 @@ class PlayerAlpha:
         pygame.display.update()
 
     def handle_mouse_button_down(self, event):
-        """Handles mouse motion event"""
+        """handles mouse motion event"""
         if self.turn == self.player:
             posx = event.pos[0]
             col = int(math.floor(posx / self.board.square_size))
@@ -124,15 +126,15 @@ class PlayerAlpha:
                 self.draw_board()
 
     def handle_mouse_event(self, event):
-        """Handles mouse events (e.g., motion, button click)."""
+        """handles mouse events (e.g., motion, button click)."""
         if event.type == pygame.MOUSEMOTION:
             self.handle_mouse_motion(event)
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
             self.handle_mouse_button_down(event)
 
-    def handle_ai_move(self):
-        """Handles the AI player's move using the Alpha-Beta Pruning algorithm"""
+    def handle_alpha_beta_ai(self):
+        """handles the AI player's move using the Alpha-Beta Pruning algorithm"""
         if self.turn == self.ai_player:
             ai_move = self.ai_alpha.get_best_move()
             ai_row = self.board.open_row(ai_move)
@@ -147,7 +149,7 @@ class PlayerAlpha:
                 self.draw_board()
 
     def run(self):
-        """This handles the game logic"""
+        """this handles the game logic"""
 
         # initialize game sounds
         Sounds.stop()
@@ -158,7 +160,7 @@ class PlayerAlpha:
                 if event.type == pygame.QUIT:
                     sys.exit()
                 self.handle_mouse_event(event)
-            self.handle_ai_move()
+            self.handle_alpha_beta_ai()
 
             # Display winning message after the game is over
             if self.board.winning_move(self.player_piece):
