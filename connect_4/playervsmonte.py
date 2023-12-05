@@ -9,6 +9,7 @@ import pygame
 from connect_4.board import Board
 from connect_4.sounds import Sounds
 from monte.tree_creation_try_1 import MonteCarloTreeNode
+from connect_4.leaderboard import Leaderboard
 import connect_4.rgbcolors
 
 
@@ -49,6 +50,8 @@ class PlayerAIGame:
         # pygame screen and font
         self.screen = screen
         self.font = pygame.font.Font(None, 36)
+        
+        self.leaderboard = Leaderboard()
 
     def draw_board(self):
         """calls the drawboard function from Board Class"""
@@ -62,6 +65,16 @@ class PlayerAIGame:
             text_color = connect_4.rgbcolors.yellow
         else:
             text_color = connect_4.rgbcolors.black  # Default color
+            
+        if winner == f"Player {self.player_piece}":
+            self.leaderboard.update_leaderboard("Player 1", "MonteCarlo")
+        elif winner == f"Player {self.ai_piece}":
+            self.leaderboard.update_leaderboard("MonteCarlo", "Player 1")
+            
+        self.leaderboard.save_leaderboard()
+
+        pygame.time.wait(3000)
+
 
         # display winning message on the screen
         text = self.font.render(f"{winner} wins!", True, text_color)
