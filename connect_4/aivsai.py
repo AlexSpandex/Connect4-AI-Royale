@@ -1,7 +1,7 @@
-# Player 1 = red
-# Player 2 = yellow
+# Player 1 Alpha = red
+# Player 2 Monte = yellow
 
-"""Players vs AlphaBeta file"""
+"""AlphaBeta vs Monte-Carlo file"""
 
 import sys
 import pygame
@@ -13,11 +13,11 @@ import connect_4.rgbcolors
 
 
 class Ai:
-    """Sets up the player for the game"""
+    """Sets up the AI for the game"""
 
     def __init__(self, screen):
         """
-        initialize the PlayerAlpha instance.
+        initialize the AI instance.
 
         Parameters:
         - screen (pygame.Surface): the pygame screen for rendering.
