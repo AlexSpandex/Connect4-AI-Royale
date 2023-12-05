@@ -1,4 +1,3 @@
-
 """A list of RGB colors produced by X11's showrgb command. The color database
     is probably from an IRIX system circa 2005"""
 
@@ -15,7 +14,7 @@ def mult_color(scalar, color):
     return tuple(map(lambda n: _clamp(n * scalar), color))
 
 
-def mult_colr(color_a,  color_b):
+def mult_colr(color_a, color_b):
     """Multiply a color by another color."""
     return (
         _clamp(color_a[0] * color_b[0]),
@@ -33,8 +32,7 @@ def sum_color(color_a, color_b):
     )
 
 
-def diff_color(
-        color_a, color_b):
+def diff_color(color_a, color_b):
     """Take the difference of two colors."""
     return (
         _clamp(color_a[0] - color_b[0]),

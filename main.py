@@ -2,12 +2,12 @@
 
 """This is where all the functions goes in the game"""
 
-from connect_4.game import *
+from connect_4.game import Game
 
 
 def main():
     """Main function to run the game"""
-    
+
     the_game = Game()
     return the_game.run()
 

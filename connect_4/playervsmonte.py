@@ -29,8 +29,8 @@ class PlayerAIGame:
         self.ai_piece = 2
 
         self.SQUARESIZE = 100
-        self.width = self.board.COLUMN_COUNT * self.SQUARESIZE
-        self.height = (self.board.ROW_COUNT + 1) * self.SQUARESIZE
+        self.width = self.board.column_count * self.SQUARESIZE
+        self.height = (self.board.row_count + 1) * self.SQUARESIZE
 
         self.RADIUS = int(self.SQUARESIZE / 2 - 5)
 

@@ -9,19 +9,18 @@ class Board:
     """Sets up the board for the game"""
 
     def __init__(self):
-        pygame.init()
 
-        self.ROW_COUNT = 6
-        self.COLUMN_COUNT = 7
+        self.row_count = 6
+        self.column_count = 7
         self.board = self.create_board()
 
-        self.SQUARESIZE = 100
-        self.width = self.COLUMN_COUNT * self.SQUARESIZE
-        self.height = (self.ROW_COUNT + 1) * self.SQUARESIZE
+        self.square_size = 100
+        self.width = self.column_count * self.square_size
+        self.height = (self.row_count + 1) * self.square_size
 
     def create_board(self):
         """Creating the board layout"""
-        return np.zeros((self.ROW_COUNT, self.COLUMN_COUNT))
+        return np.zeros((self.row_count, self.column_count))
 
     def drop_piece(self, row, col, piece):
         """Handles when a piece is dropped"""
@@ -29,15 +28,19 @@ class Board:
 
     def valid_location(self, col):
         """Checks for a valid location if a piece is dropped"""
-        return isinstance(col, int) and 0 <= col < self.COLUMN_COUNT and self.board[self.ROW_COUNT - 1, col] == 0
-        # return 0 <= col < self.COLUMN_COUNT and self.board[self.ROW_COUNT - 1][col] == 0
+        return (
+            isinstance(col, int)
+            and 0 <= col < self.column_count
+            and self.board[self.row_count - 1, col] == 0
+        )
 
     def open_row(self, col):
         """Checks for the next open row"""
-        for r in range(self.ROW_COUNT):
-            ex = (self.board[r][col] == 0).all()
+        for row in range(self.row_count):
+            ex = (self.board[row][col] == 0).all()
             if ex:
-                return r
+                return row
+        return None
 
     def print_board(self):
         """Prints the board on the terminal"""
@@ -48,99 +51,104 @@ class Board:
         """Checks for the winning piece"""
 
         # checks for horizontal
-        for c in range(self.COLUMN_COUNT - 3):
-            for r in range(self.ROW_COUNT):
+        for column in range(self.column_count - 3):
+            for row in range(self.row_count):
                 if (
-                    self.board[r][c] == piece
-                    and self.board[r][c + 1] == piece
-                    and self.board[r][c + 2] == piece
-                    and self.board[r][c + 3] == piece
+                    self.board[row][column] == piece
+                    and self.board[row][column + 1] == piece
+                    and self.board[row][column + 2] == piece
+                    and self.board[row][column + 3] == piece
                 ):
                     return True
 
         # checks for vertical
-        for c in range(self.COLUMN_COUNT):
-            for r in range(self.ROW_COUNT - 3):
+        for column in range(self.column_count):
+            for row in range(self.row_count - 3):
                 if (
-                    self.board[r][c] == piece
-                    and self.board[r + 1][c] == piece
-                    and self.board[r + 2][c] == piece
-                    and self.board[r + 3][c] == piece
+                    self.board[row][column] == piece
+                    and self.board[row + 1][column] == piece
+                    and self.board[row + 2][column] == piece
+                    and self.board[row + 3][column] == piece
                 ):
                     return True
 
         # checks for right diagnol
-        for c in range(self.COLUMN_COUNT - 3):
-            for r in range(self.ROW_COUNT - 3):
+        for column in range(self.column_count - 3):
+            for row in range(self.row_count - 3):
                 if (
-                    self.board[r][c] == piece
-                    and self.board[r + 1][c + 1] == piece
-                    and self.board[r + 2][c + 2] == piece
-                    and self.board[r + 3][c + 3] == piece
+                    self.board[row][column] == piece
+                    and self.board[row + 1][column + 1] == piece
+                    and self.board[row + 2][column + 2] == piece
+                    and self.board[row + 3][column + 3] == piece
                 ):
                     return True
 
         # checks for left diagnol
-        for c in range(self.COLUMN_COUNT - 3):
-            for r in range(3, self.ROW_COUNT):
+        for column in range(self.column_count - 3):
+            for row in range(3, self.row_count):
                 if (
-                    self.board[r][c] == piece
-                    and self.board[r - 1][c + 1] == piece
-                    and self.board[r - 2][c + 2] == piece
-                    and self.board[r - 3][c + 3] == piece
+                    self.board[row][column] == piece
+                    and self.board[row - 1][column + 1] == piece
+                    and self.board[row - 2][column + 2] == piece
+                    and self.board[row - 3][column + 3] == piece
                 ):
                     return True
 
-    def draw_board(self, screen, RADIUS):
+        # No winning condition found
+        return None
+
+    def draw_board(self, screen, radius):
         """Draws the board on screen"""
         # board drawing
-        for c in range(self.COLUMN_COUNT):
-            for r in range(self.ROW_COUNT):
+        for column in range(self.column_count):
+            for row in range(self.row_count):
                 pygame.draw.rect(
                     screen,
                     connect_4.rgbcolors.blue,
                     (
-                        c * self.SQUARESIZE,
-                        r * self.SQUARESIZE + self.SQUARESIZE,
-                        self.SQUARESIZE,
-                        self.SQUARESIZE,
+                        column * self.square_size,
+                        row * self.square_size + self.square_size,
+                        self.square_size,
+                        self.square_size,
                     ),
                 )
                 pygame.draw.circle(
                     screen,
                     connect_4.rgbcolors.light_blue,
                     (
-                        int(c * self.SQUARESIZE + self.SQUARESIZE / 2),
+                        int(column * self.square_size + self.square_size / 2),
                         int(
-                            r * self.SQUARESIZE + self.SQUARESIZE + self.SQUARESIZE / 2
+                            row * self.square_size
+                            + self.square_size
+                            + self.square_size / 2
                         ),
                     ),
-                    RADIUS,
+                    radius,
                 )
 
         # player pieces
-        for c in range(self.COLUMN_COUNT):
-            for r in range(self.ROW_COUNT):
-                if self.board[r][c] == 1:
+        for column in range(self.column_count):
+            for row in range(self.row_count):
+                if self.board[row][column] == 1:
                     pygame.draw.circle(
                         screen,
                         connect_4.rgbcolors.red,
                         (
-                            int(c * self.SQUARESIZE + self.SQUARESIZE / 2),
+                            int(column * self.square_size + self.square_size / 2),
                             screen.get_height()
-                            - int(r * self.SQUARESIZE + self.SQUARESIZE / 2),
+                            - int(row * self.square_size + self.square_size / 2),
                         ),
-                        RADIUS,
+                        radius,
                     )
-                elif self.board[r][c] == 2:
+                elif self.board[row][column] == 2:
                     pygame.draw.circle(
                         screen,
                         connect_4.rgbcolors.yellow,
                         (
-                            int(c * self.SQUARESIZE + self.SQUARESIZE / 2),
+                            int(column * self.square_size + self.square_size / 2),
                             screen.get_height()
-                            - int(r * self.SQUARESIZE + self.SQUARESIZE / 2),
+                            - int(row * self.square_size + self.square_size / 2),
                         ),
-                        RADIUS,
+                        radius,
                     )
         pygame.display.update()
