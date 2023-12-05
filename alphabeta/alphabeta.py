@@ -38,9 +38,9 @@ class AlphaBeta:
         - list: List of valid column locations
         """
         valid_locations = []
-        for col in range(self.board.column_count):
-            if self.board.valid_location(col):
-                valid_locations.append(col)
+        for column in range(self.board.column_count):
+            if self.board.valid_location(column):
+                valid_locations.append(column)
         return valid_locations
 
     def evaluate_window(self, window, piece):
@@ -158,6 +158,7 @@ class AlphaBeta:
                 if new_score > value:
                     value = new_score
                     column = col
+                # alpha is updated with the maximum of alpha and value
                 alpha = max(alpha, value)
                 # alpha-beta pruning: stop exploring if the current branch is not promising
                 if alpha >= beta:
@@ -177,6 +178,7 @@ class AlphaBeta:
             if new_score < value:
                 value = new_score
                 column = col
+            # beta is updated with the minimum of beta and value
             beta = min(beta, value)
             # alpha-beta pruning: stop exploring if the current branch is not promising
             if alpha >= beta:
