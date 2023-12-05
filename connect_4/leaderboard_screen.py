@@ -1,10 +1,6 @@
 import pygame
 import sys
 
-# Initialize Pygame
-pygame.init()
-
-# Define dark mode colors
 BACKGROUND_COLOR = (31, 31, 31)  # Dark background
 TITLE_COLOR = (255, 255, 255)  # White text
 STATS_COLOR = (173, 216, 230)  # Light blue text
