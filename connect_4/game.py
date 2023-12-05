@@ -4,10 +4,9 @@ import sys
 import pygame
 from connect_4.title_screen import TitleScreen
 from connect_4.sounds import Sounds
-
-# from connect_4.player import PlayerGame
 from connect_4.playervsmonte import PlayerAIGame
 from connect_4.playervsalpha import PlayerAlpha
+from connect_4.aivsai import Ai
 import connect_4.rgbcolors
 
 
@@ -29,6 +28,7 @@ class Game:
         # self.player_game = PlayerGame(self.title_screen.screen)
         self.player_vs_ai_game = PlayerAIGame(self.title_screen.screen)
         self.player_vs_alpha_game = PlayerAlpha(self.title_screen.screen)
+        self.ai_vs_ai_game = Ai(self.title_screen.screen)
 
     def run(self):
         """Main loop"""
@@ -51,15 +51,17 @@ class Game:
                     self.title_screen.handle_button_event(menu_mouse_pos)
 
                     if self.title_screen.selected_option:
-                        if self.title_screen.selected_option == "AI vs AI":
+                        if self.title_screen.selected_option == "Player vs Monte":
                             self.player_vs_ai_game.run()
 
-                        elif self.title_screen.selected_option == "Player vs AI":
+                        elif self.title_screen.selected_option == "Player vs Alpha":
                             self.player_vs_alpha_game.run()
 
                         elif self.title_screen.selected_option == "Leaderboard":
                             # Implement functionality here
                             pass
+                        elif self.title_screen.selected_option == "Secret":
+                            self.ai_vs_ai_game.run()
 
             self.title_screen.screen.fill(connect_4.rgbcolors.grey16)
             self.title_screen.draw_menu()

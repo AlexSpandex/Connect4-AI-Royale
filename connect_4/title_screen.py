@@ -82,6 +82,14 @@ class TitleScreen:
                 "base_color": (63, 81, 181),
                 "hover_color": (33, 150, 243),
             },
+            {
+                "rect": pygame.Rect(
+                    (self.width / 2 - 100, self.height / 2 + 180), (200, 50)
+                ),
+                "text": "Secret",
+                "base_color": connect_4.rgbcolors.red,
+                "hover_color": (33, 150, 243),
+            }
         ]
 
         # Draw buttons
@@ -102,19 +110,26 @@ class TitleScreen:
         leaderboard_button = pygame.Rect(
             (self.width / 2 - 100, self.height / 2), (200, 50)
         )
-        ai_vs_ai_button = pygame.Rect(
+        player_vs_monet_button = pygame.Rect(
             (self.width / 2 - 100, self.height / 2 + 60), (200, 50)
         )
-        player_vs_ai_button = pygame.Rect(
+        player_vs_alpha_button = pygame.Rect(
             (self.width / 2 - 100, self.height / 2 + 120), (200, 50)
+        )
+        ai_vs_ai_button = pygame.Rect(
+            (self.width / 2 - 100, self.height / 2 + 180), (200, 50)
         )
 
         if leaderboard_button.collidepoint(mouse_pos):
             self.selected_option = "Leaderboard"
             print("Leaderboard button pressed")
+        elif player_vs_monet_button.collidepoint(mouse_pos):
+            self.selected_option = "Player vs Monte"
+            print("Player vs Monte button pressed")
+        elif player_vs_alpha_button.collidepoint(mouse_pos):
+            self.selected_option = "Player vs Alpha"
+            print("Player vs Alpha button pressed")
         elif ai_vs_ai_button.collidepoint(mouse_pos):
-            self.selected_option = "AI vs AI"
+            self.selected_option = "Secret"
             print("AI vs AI button pressed")
-        elif player_vs_ai_button.collidepoint(mouse_pos):
-            self.selected_option = "Player vs AI"
-            print("Player vs AI button pressed")
+        
