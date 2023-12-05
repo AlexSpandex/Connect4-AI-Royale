@@ -53,10 +53,17 @@ class TitleScreen:
     def draw_menu(self):
         """this takes care of drawing the buttons and text on the screen."""
         font = pygame.font.Font(None, 36)
-        title_text = font.render("Connect 4 Royale", True, connect_4.rgbcolors.white)
+        title_font = pygame.font.SysFont("mono", 65, True)
+        title_text = title_font.render("Connect 4 Royale", True, connect_4.rgbcolors.black)
 
         # Get title dimensions
-        title_width = title_text.get_width()
+        title_width, title_height = title_text.get_size()
+
+        # Calculate the position for the title and the surrounding box
+        title_pos = (self.width / 2 - title_width / 2, self.height / 4)
+        title_box_rect = pygame.Rect(
+            title_pos[0] - 10, title_pos[1] - 10, title_width + 20, title_height + 20
+        )
 
         # Button data
         buttons = [
@@ -95,6 +102,9 @@ class TitleScreen:
         # Draw buttons
         for button_info in buttons:
             self.draw_button(button_info, font)
+
+        # Draw the box around the title
+        pygame.draw.rect(self.screen, connect_4.rgbcolors.light_grey, title_box_rect)
 
         # Add the title on the screen
         title_pos = (self.width / 2 - title_width / 2, self.height / 4)
