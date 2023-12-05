@@ -114,19 +114,20 @@ class PlayerAIGame:
             if self.turn == self.ai_player:
                     state = self.board.board.tolist()[::-1]
                     action = MonteCarloTreeNode.monte_carlo_tree_search(state, 1000, 1)
-                    row,col = MonteCarloTreeNode.get_coordinates(state, action.state)
+                    if action != None:
+                        row,col = MonteCarloTreeNode.get_coordinates(state, action.state)
                     
-                    if self.board.valid_location(col):
-                        row = self.board.open_row(col)
-                        self.board.drop_piece(row, col, self.ai_piece)
-                        
-                        if self.board.winning_move(self.ai_piece):
-                            self.game_over = True
+                        if self.board.valid_location(col):
+                            row = self.board.open_row(col)
+                            self.board.drop_piece(row, col, self.ai_piece)
+                            
+                            if self.board.winning_move(self.ai_piece):
+                                self.game_over = True
 
-                        self.draw_board()
+                            self.draw_board()
 
-                        self.turn += 1
-                        self.turn %= 2
+                            self.turn += 1
+                            self.turn %= 2
 
             # Display winning message after the game is over
             if self.board.winning_move(self.player_piece):
