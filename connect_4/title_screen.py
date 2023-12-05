@@ -8,7 +8,17 @@ class TitleScreen:
     """Sets up the Scene of the game"""
 
     def __init__(self):
+        """
+        initializes the TitleScreen instance.
 
+        Attributes:
+        - width (int): width of the screen.
+        - height (int): height of the screen.
+        - screen (pygame.Surface): pygame surface for drawing.
+        - clock (pygame.time.Clock): pygame clock for controlling the frame rate.
+        - start_game (bool): flag indicating if the game should start.
+        - selected_option (str): selected game option (Leaderboard, AI vs AI, Player vs AI).
+        """
         self.width, self.height = 700, 700
         self.screen = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption("Connect 4 AI Royale")
@@ -17,7 +27,13 @@ class TitleScreen:
         self.selected_option = None
 
     def draw_button(self, button_info, font):
-        """Draws a button with optional hover effect."""
+        """
+        draws a button with optional hover effect.
+
+        Parameters:
+        - button_info (dict): dictionary containing button information.
+        - font (pygame.font.Font): pygame font for rendering text.
+        """
         mouse_pos = pygame.mouse.get_pos()
         is_hovered = button_info["rect"].collidepoint(mouse_pos)
 
@@ -35,8 +51,7 @@ class TitleScreen:
         self.screen.blit(text_surface, text_pos)
 
     def draw_menu(self):
-        """This takes care of drawing the buttons and text on the screen."""
-
+        """this takes care of drawing the buttons and text on the screen."""
         font = pygame.font.Font(None, 36)
         title_text = font.render("Connect 4 Royale", True, connect_4.rgbcolors.white)
 
@@ -78,7 +93,12 @@ class TitleScreen:
         self.screen.blit(title_text, title_pos)
 
     def handle_button_event(self, mouse_pos):
-        """This handles the events when buttons are being pressed"""
+        """
+        handles the events when buttons are being pressed.
+
+        Parameters:
+        - mouse_pos (tuple): tuple representing the mouse position (x, y).
+        """
         leaderboard_button = pygame.Rect(
             (self.width / 2 - 100, self.height / 2), (200, 50)
         )

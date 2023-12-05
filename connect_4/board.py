@@ -9,7 +9,7 @@ class Board:
     """Sets up the board for the game"""
 
     def __init__(self):
-
+        """initialize the board with default values"""
         self.row_count = 6
         self.column_count = 7
         self.board = self.create_board()
@@ -49,7 +49,6 @@ class Board:
 
     def winning_move(self, piece):
         """Checks for the winning piece"""
-
         # checks for horizontal
         for column in range(self.column_count - 3):
             for row in range(self.row_count):
