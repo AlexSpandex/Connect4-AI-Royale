@@ -141,12 +141,26 @@ class MonteCarloTreeNode:
             return -1
 
     
+    # def best_uct_score_in_children_of_current_node(self):
+    #     #UCB = wins/visits + exploration_factor * sqrt(log(total_visits)/visits)
+    #     exploration_factor = math.sqrt(2)
+    #     children_uct_values = [(c.wins / c.visits) + exploration_factor * math.sqrt((2 * math.log(self.visits) / c.visits)) for c in self.children]
+    #     index_of_highest_ucb_of_children = children_uct_values.index(max(children_uct_values))
+    #     return self.children[index_of_highest_ucb_of_children]
     def best_uct_score_in_children_of_current_node(self):
-        #UCB = wins/visits + exploration_factor * sqrt(log(total_visits)/visits)
+        if not self.children:
+            return None  # Handle the case when there are no children
+
         exploration_factor = math.sqrt(2)
         children_uct_values = [(c.wins / c.visits) + exploration_factor * math.sqrt((2 * math.log(self.visits) / c.visits)) for c in self.children]
-        index_of_highest_ucb_of_children = children_uct_values.index(max(children_uct_values))
-        return self.children[index_of_highest_ucb_of_children]
+
+        # Check if children_uct_values is not empty before finding the maximum
+        if children_uct_values:
+            index_of_highest_ucb_of_children = children_uct_values.index(max(children_uct_values))
+            return self.children[index_of_highest_ucb_of_children]
+        else:
+            return self.children[0]  # Handle the case when there are no children
+
     
     def select_node_based_on_uct_unless_all_children_not_expanded_to_use_for_simulation(self):
         current_node = self
