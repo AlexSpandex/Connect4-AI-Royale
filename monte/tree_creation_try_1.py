@@ -88,6 +88,16 @@ class MonteCarloTreeNode:
                     self.state[row+3][column+3] == self.current_player
                 ):
                     return True
+                # checks for left diagnol
+        for column in range(len(self.state[0])-3):
+            for row in range(3, len(self.state)):
+                if (
+                    self.state[row][column] == self.current_player
+                    and self.state[row - 1][column + 1] == self.current_player
+                    and self.state[row - 2][column + 2] == self.current_player
+                    and self.state[row - 3][column + 3] == self.current_player
+                ):
+                    return True
         return False
 
     def expand_current_node(self):
@@ -167,18 +177,21 @@ class MonteCarloTreeNode:
             root_node = MonteCarloTreeNode.all_nodes[tuple(map(tuple, initial_state))]
         else:
             root_node = MonteCarloTreeNode(initial_state, current_player)
-        for i in range(iterations):
-            choosen_action = root_node.select_node_based_on_uct_unless_all_children_not_expanded_to_use_for_simulation()
-            reward_or_penalty = choosen_action.simulate_fake_game_randomly_till_terminal()
-            choosen_action.backpropogate_assign_wins_and_losses_after_simulation(reward_or_penalty)
-            wins = [c.wins for c in root_node.children]
-            visits = [c.visits for c in root_node.children]
-            print(reward_or_penalty,'wins', wins, 'visits', visits,'root wins', root_node.wins, root_node.visits)
-        avg_score = [c.wins/c.visits for c in root_node.children]
-        best_avg_score_index = avg_score.index(max(avg_score))
-        for row in root_node.children[best_avg_score_index].state:
-            print(row)
-        return root_node.children[best_avg_score_index]
+        if not root_node.no_winner() and not root_node.is_terminal_and_win():
+            for i in range(iterations):
+                choosen_action = root_node.select_node_based_on_uct_unless_all_children_not_expanded_to_use_for_simulation()
+                reward_or_penalty = choosen_action.simulate_fake_game_randomly_till_terminal()
+                choosen_action.backpropogate_assign_wins_and_losses_after_simulation(reward_or_penalty)
+                wins = [c.wins for c in root_node.children]
+                visits = [c.visits for c in root_node.children]
+                print(reward_or_penalty,'wins', wins, 'visits', visits,'root wins', root_node.wins, root_node.visits)
+            avg_score = [c.wins/c.visits for c in root_node.children]
+            best_avg_score_index = avg_score.index(max(avg_score))
+            # for row in root_node.children[best_avg_score_index].state:
+            #     print(row)
+            return root_node.children[best_avg_score_index]
+        else:
+            return None
 
     def get_coordinates(root_state, best_child_state):
         for column in range(len(root_state[0])):
