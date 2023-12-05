@@ -82,7 +82,7 @@ class Ai:
         self.turn = 0
 
         # Clear the winner message from the screen
-        self.screen.fill(connect_4.rgbcolors.grey16)
+        self.screen.fill(connect_4.rgbcolors.light_blue)
         self.draw_board()
         pygame.display.update()
 
