@@ -5,6 +5,8 @@ BACKGROUND_COLOR = (31, 31, 31)  # Dark background
 TITLE_COLOR = (255, 255, 255)  # White text
 STATS_COLOR = (173, 216, 230)  # Light blue text
 
+
+pygame.init()
 # Create a 700x700 window
 screen = pygame.display.set_mode((700, 700))
 pygame.display.set_caption("Connect 4 Leaderboard")
