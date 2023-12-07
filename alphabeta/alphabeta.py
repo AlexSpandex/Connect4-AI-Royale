@@ -38,9 +38,9 @@ class AlphaBeta:
         - list: List of valid column locations
         """
         valid_locations = []
-        for col in range(self.board.column_count):
-            if self.board.valid_location(col):
-                valid_locations.append(col)
+        for column in range(self.board.column_count):
+            if self.board.valid_location(column):
+                valid_locations.append(column)
         return valid_locations
 
     def evaluate_window(self, window, piece):
@@ -126,11 +126,15 @@ class AlphaBeta:
         Returns:
         - tuple: (Best column for the current player, corresponding value)
         """
-
         # get valid locations for the current state
         valid_locations = self.get_valid_locations()
+        
         # check if the current state is a terminal node
         is_terminal = self.is_terminal_node()
+        
+        # initialize alpha & beta values
+        alpha_ = float("-inf")
+        beta_ = float("inf")
 
         # If at the maximum depth or a terminal node,
         # return the evaluation score
@@ -147,18 +151,21 @@ class AlphaBeta:
 
         # If maximizing player's turn
         if maximizing_player:
-            value = float("-inf")
+            value = alpha_
             column = np.random.choice(valid_locations)
             for col in valid_locations:
                 row = self.board.open_row(col)
+                # create new board simuates a move
                 temp_board = self.board.board.copy()
+                # drop the piece of the current player
                 self.board.drop_piece(row, col, 2)
                 # recursively call minimax for the next depth with the opponent's turn
-                new_score = self.minimax(depth - 1, alpha, beta, False)[1]
+                board_score = self.minimax(depth - 1, alpha, beta, False)[1]
                 self.board.board = temp_board
-                if new_score > value:
-                    value = new_score
+                if board_score > value:
+                    value = board_score
                     column = col
+                # alpha is updated with the maximum of alpha and value
                 alpha = max(alpha, value)
                 # alpha-beta pruning: stop exploring if the current branch is not promising
                 if alpha >= beta:
@@ -166,18 +173,21 @@ class AlphaBeta:
             return column, value
 
         # if minimizing player's turn
-        value = float("inf")
+        value = beta_
         column = np.random.choice(valid_locations)
         for col in valid_locations:
             row = self.board.open_row(col)
+            # create new board simuates a move
             temp_board = self.board.board.copy()
+            # drop the piece of the current player
             self.board.drop_piece(row, col, 1)
             # recursively call minimax for the next depth with the maximizing player's turn
-            new_score = self.minimax(depth - 1, alpha, beta, True)[1]
+            board_score = self.minimax(depth - 1, alpha, beta, True)[1]
             self.board.board = temp_board
-            if new_score < value:
-                value = new_score
+            if board_score < value:
+                value = board_score
                 column = col
+            # beta is updated with the minimum of beta and value
             beta = min(beta, value)
             # alpha-beta pruning: stop exploring if the current branch is not promising
             if alpha >= beta:

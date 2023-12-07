@@ -53,10 +53,17 @@ class TitleScreen:
     def draw_menu(self):
         """this takes care of drawing the buttons and text on the screen."""
         font = pygame.font.Font(None, 36)
-        title_text = font.render("Connect 4 Royale", True, connect_4.rgbcolors.white)
+        title_font = pygame.font.SysFont("mono", 65, True)
+        title_text = title_font.render("Connect 4 Royale", True, connect_4.rgbcolors.black)
 
         # Get title dimensions
-        title_width = title_text.get_width()
+        title_width, title_height = title_text.get_size()
+
+        # Calculate the position for the title and the surrounding box
+        title_pos = (self.width / 2 - title_width / 2, self.height / 4)
+        title_box_rect = pygame.Rect(
+            title_pos[0] - 10, title_pos[1] - 10, title_width + 20, title_height + 20
+        )
 
         # Button data
         buttons = [
@@ -82,11 +89,22 @@ class TitleScreen:
                 "base_color": (63, 81, 181),
                 "hover_color": (33, 150, 243),
             },
+            {
+                "rect": pygame.Rect(
+                    (self.width / 2 - 100, self.height / 2 + 180), (200, 50)
+                ),
+                "text": "Secret",
+                "base_color": connect_4.rgbcolors.red,
+                "hover_color": (33, 150, 243),
+            }
         ]
 
         # Draw buttons
         for button_info in buttons:
             self.draw_button(button_info, font)
+
+        # Draw the box around the title
+        pygame.draw.rect(self.screen, connect_4.rgbcolors.light_grey, title_box_rect)
 
         # Add the title on the screen
         title_pos = (self.width / 2 - title_width / 2, self.height / 4)
@@ -102,19 +120,26 @@ class TitleScreen:
         leaderboard_button = pygame.Rect(
             (self.width / 2 - 100, self.height / 2), (200, 50)
         )
-        ai_vs_ai_button = pygame.Rect(
+        player_vs_monet_button = pygame.Rect(
             (self.width / 2 - 100, self.height / 2 + 60), (200, 50)
         )
-        player_vs_ai_button = pygame.Rect(
+        player_vs_alpha_button = pygame.Rect(
             (self.width / 2 - 100, self.height / 2 + 120), (200, 50)
+        )
+        ai_vs_ai_button = pygame.Rect(
+            (self.width / 2 - 100, self.height / 2 + 180), (200, 50)
         )
 
         if leaderboard_button.collidepoint(mouse_pos):
             self.selected_option = "Leaderboard"
             print("Leaderboard button pressed")
+        elif player_vs_monet_button.collidepoint(mouse_pos):
+            self.selected_option = "Player vs Monte"
+            print("Player vs Monte button pressed")
+        elif player_vs_alpha_button.collidepoint(mouse_pos):
+            self.selected_option = "Player vs Alpha"
+            print("Player vs Alpha button pressed")
         elif ai_vs_ai_button.collidepoint(mouse_pos):
-            self.selected_option = "AI vs AI"
+            self.selected_option = "Secret"
             print("AI vs AI button pressed")
-        elif player_vs_ai_button.collidepoint(mouse_pos):
-            self.selected_option = "Player vs AI"
-            print("Player vs AI button pressed")
+        
