@@ -1,7 +1,7 @@
 import json
 import os
 
-class Leaderboard:
+class LeaderboardData:
     def __init__(self, filename="leaderboard.json"):
         script_dir = os.path.dirname(os.path.abspath(__file__))
         self.filename = os.path.join(script_dir, filename)

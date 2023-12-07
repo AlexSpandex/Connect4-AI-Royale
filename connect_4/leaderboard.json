@@ -1,1 +1,1 @@
-{"AlphaBeta": {"wins": 4, "losses": 1}, "Player 1": {"wins": 2, "losses": 4}, "MonteCarlo": {"wins": 0, "losses": 1}}
+{"AlphaBeta": {"wins": 3, "losses": 0}, "Player 1": {"wins": 4, "losses": 4}, "MonteCarlo": {"wins": 1, "losses": 4}}

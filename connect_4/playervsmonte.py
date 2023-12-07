@@ -9,7 +9,7 @@ import pygame
 from connect_4.board import Board
 from connect_4.sounds import Sounds
 from monte.tree_creation_try_1 import MonteCarloTreeNode
-from connect_4.leaderboard import Leaderboard
+from connect_4.leaderboard_data import LeaderboardData
 import connect_4.rgbcolors
 
 
@@ -51,7 +51,7 @@ class PlayerAIGame:
         self.screen = screen
         self.font = pygame.font.Font(None, 36)
         
-        self.leaderboard = Leaderboard()
+        self.leaderboard = LeaderboardData()
 
     def draw_board(self):
         """calls the drawboard function from Board Class"""
@@ -66,21 +66,19 @@ class PlayerAIGame:
         else:
             text_color = connect_4.rgbcolors.black  # Default color
             
+        # display winning message on the screen
+        text = self.font.render(f"{winner} wins!", True, text_color)
+        text_rect = text.get_rect(center=(self.width // 2, self.board.square_size // 2))
+        self.screen.blit(text, text_rect)
+        pygame.display.update()
+            
         if winner == f"Player {self.player_piece}":
             self.leaderboard.update_leaderboard("Player 1", "MonteCarlo")
         elif winner == f"Player {self.ai_piece}":
             self.leaderboard.update_leaderboard("MonteCarlo", "Player 1")
             
         self.leaderboard.save_leaderboard()
-
-        pygame.time.wait(3000)
-
-
-        # display winning message on the screen
-        text = self.font.render(f"{winner} wins!", True, text_color)
-        text_rect = text.get_rect(center=(self.width // 2, self.board.square_size // 2))
-        self.screen.blit(text, text_rect)
-        pygame.display.update()
+        
         # Wait for 3 seconds
         pygame.time.wait(3000)
 
@@ -88,9 +86,19 @@ class PlayerAIGame:
         """
         resets the game by initializing a new Board and AlphaBeta instance.
         """
+        # Display current wins and losses
+        self.leaderboard.display_leaderboard()
         self.board = Board()
         self.game_over = False
         self.turn = 0
+        
+        if self.board.winning_move(self.player_piece):
+             # Display current wins and losses after resetting
+            print("After resetting, before displaying leaderboard")
+            self.leaderboard.display_leaderboard()
+
+            self.leaderboard.save_leaderboard()
+            print("After saving leaderboard")
 
     def switch_turn(self):
         """switches the turn between players."""
@@ -181,6 +189,12 @@ class PlayerAIGame:
                     print("ESC button pressed-Exiting...")
                     pygame.quit()
                     sys.exit()
+                elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                    print("Space button pressed leaveing playerVSmonte...")
+                    self.reset_game()
+                    Sounds.stop()
+                    Sounds.title_music()
+                    return
                 self.handle_mouse_event(event)
             self.handle_monte_carlo_ai()
 

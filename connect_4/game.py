@@ -7,6 +7,7 @@ from connect_4.sounds import Sounds
 from connect_4.playervsmonte import PlayerAIGame
 from connect_4.playervsalpha import PlayerAlpha
 from connect_4.aivsai import Ai
+from connect_4.leaderboard_screen import LeaderBoardScreen
 
 
 class Game:
@@ -24,6 +25,7 @@ class Game:
         """
         self.selected_option = None
         self.title_screen = TitleScreen()
+        self.leaderboard = LeaderBoardScreen()
         # self.player_game = PlayerGame(self.title_screen.screen)
         self.player_vs_ai_game = PlayerAIGame(self.title_screen.screen)
         self.player_vs_alpha_game = PlayerAlpha(self.title_screen.screen)
@@ -66,8 +68,8 @@ class Game:
                             self.player_vs_alpha_game.run()
 
                         elif self.title_screen.selected_option == "Leaderboard":
-                            # Implement functionality here
-                            pass
+                            self.leaderboard.run()
+                            
                         elif self.title_screen.selected_option == "Secret":
                             self.ai_vs_ai_game.run()
 

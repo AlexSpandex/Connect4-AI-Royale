@@ -9,7 +9,7 @@ import pygame
 from connect_4.board import Board
 from connect_4.sounds import Sounds
 from alphabeta.alphabeta import AlphaBeta
-from connect_4.leaderboard import Leaderboard
+from connect_4.leaderboard_screen import LeaderboardData
 import connect_4.rgbcolors
 
 
@@ -53,9 +53,7 @@ class PlayerAlpha:
         self.font = pygame.font.Font(None, 36)
         
         # loading leaderboard win/loses
-        self.leaderboard = Leaderboard()
-        
-        
+        self.leaderboard = LeaderboardData()
 
     def draw_board(self):
         """calls the drawboard function from Board Class"""
@@ -191,6 +189,12 @@ class PlayerAlpha:
                     print("ESC button pressed-Exiting...")
                     pygame.quit()
                     sys.exit()
+                elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                    print("Space button pressed leaveing playerVSalpha...")
+                    self.reset_game()
+                    Sounds.stop()
+                    Sounds.title_music()
+                    return
                 self.handle_mouse_event(event)
             self.handle_alpha_beta_ai()
 
