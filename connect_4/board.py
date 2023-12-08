@@ -150,4 +150,15 @@ class Board:
                         ),
                         radius,
                     )
+                elif self.board[row][column] == 3:
+                    pygame.draw.circle(
+                        screen,
+                        connect_4.rgbcolors.orange,
+                        (
+                            int(column * self.square_size + self.square_size / 2),
+                            screen.get_height()
+                            - int(row * self.square_size + self.square_size / 2),
+                        ),
+                        radius,
+                    )
         pygame.display.update()

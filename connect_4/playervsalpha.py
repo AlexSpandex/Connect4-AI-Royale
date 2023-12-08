@@ -39,7 +39,7 @@ class PlayerAlpha:
 
         # player 2 (AI)
         self.ai_player = 1
-        self.ai_piece = 2
+        self.ai_piece = 3
 
         # board dimensions
         self.width = self.board.column_count * self.board.square_size

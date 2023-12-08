@@ -43,12 +43,12 @@ class LeaderBoardScreen:
         """
         # Player Stats
         player_stats_text = self.font_stats.render(
-            "Player", True, connect_4.rgbcolors.light_blue
+            "Player", True, connect_4.rgbcolors.red
         )
         self.screen.blit(player_stats_text, (50, 150))
 
         player_wins_text = self.font_stats.render(
-            f"Wins: {self.player_wins}", True, connect_4.rgbcolors.green
+            f"Wins: {self.player_wins}", True, connect_4.rgbcolors.red
         )
         player_losses_text = self.font_stats.render(
             f"Losses: {self.player_losses}", True, connect_4.rgbcolors.red
@@ -63,15 +63,15 @@ class LeaderBoardScreen:
         """
         # Monte Carlo AI Stats
         monte_carlo_stats_text = self.font_stats.render(
-            "Monte Carlo AI", True, connect_4.rgbcolors.light_blue
+            "Monte Carlo AI", True, connect_4.rgbcolors.yellow
         )
         self.screen.blit(monte_carlo_stats_text, (300, 150))
 
         monte_carlo_wins_text = self.font_stats.render(
-            f"Wins: {self.monte_carlo_wins}", True, connect_4.rgbcolors.green
+            f"Wins: {self.monte_carlo_wins}", True, connect_4.rgbcolors.yellow
         )
         monte_carlo_losses_text = self.font_stats.render(
-            f"Losses: {self.monte_carlo_losses}", True, connect_4.rgbcolors.red
+            f"Losses: {self.monte_carlo_losses}", True, connect_4.rgbcolors.yellow
         )
 
         self.screen.blit(monte_carlo_wins_text, (300, 200))
@@ -83,15 +83,15 @@ class LeaderBoardScreen:
         """
         # Alpha-Beta AI Stats
         alpha_beta_stats_text = self.font_stats.render(
-            "Alpha-Beta AI", True, connect_4.rgbcolors.light_blue
+            "Alpha-Beta AI", True, connect_4.rgbcolors.orange
         )
         self.screen.blit(alpha_beta_stats_text, (550, 150))
 
         alpha_beta_wins_text = self.font_stats.render(
-            f"Wins: {self.alpha_beta_wins}", True, connect_4.rgbcolors.green
+            f"Wins: {self.alpha_beta_wins}", True, connect_4.rgbcolors.orange
         )
         alpha_beta_losses_text = self.font_stats.render(
-            f"Losses: {self.alpha_beta_losses}", True, connect_4.rgbcolors.red
+            f"Losses: {self.alpha_beta_losses}", True, connect_4.rgbcolors.orange
         )
 
         self.screen.blit(alpha_beta_wins_text, (550, 200))
