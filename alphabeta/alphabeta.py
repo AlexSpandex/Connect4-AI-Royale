@@ -58,14 +58,21 @@ class AlphaBeta:
         opponent_piece = 1 if piece == 2 else 2
 
         if window.count(piece) == 4:
-            score += 100
+            # strongly favor winning patterns
+            score += 1000
         elif window.count(piece) == 3 and window.count(0) == 1:
+            # encourage buiding towards winning patterns
             score += 5
         elif window.count(piece) == 2 and window.count(0) == 2:
+            # acknowledge potential for future patterns
             score += 2
 
         if window.count(opponent_piece) == 3 and window.count(0) == 1:
+            # penalie oppenent for having a win
             score -= 4
+        elif window.count(opponent_piece) == 4:
+            # strongly penalize opponent for winning
+            score -= 2000
 
         return score
 
@@ -122,9 +129,11 @@ class AlphaBeta:
         """
         if self.is_terminal_node():
             return (
-                (None, 100000000000000)
+                # normalize scoring to avoid numerical issues and
+                # ensures consistent scaling
+                (None, 1)
                 if self.board.winning_move(2)
-                else (None, -100000000000000)
+                else (None, -1)
                 if self.board.winning_move(1)
                 else (None, 0)
             )
