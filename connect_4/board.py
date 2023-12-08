@@ -96,6 +96,10 @@ class Board:
         # No winning condition found
         return None
 
+    def check_draw(self):
+        """checking if the game is a draw"""
+        return np.all(self.board != 0) and not self.winning_move(1) and not self.winning_move(2)
+
     def draw_board(self, screen, radius):
         """Draws the board on screen"""
         # board drawing
@@ -161,4 +165,10 @@ class Board:
                         ),
                         radius,
                     )
+        # check for draw
+        if self.check_draw():
+            font = pygame.font.Font(None, 36)
+            text = font.render("Draw!", True, connect_4.rgbcolors.white)
+            screen.blit(text, (self.width // 2 - 50, 10))
+
         pygame.display.update()

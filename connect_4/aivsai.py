@@ -157,6 +157,13 @@ class Ai:
                     print("ESC button pressed-Exiting...")
                     pygame.quit()
                     sys.exit()
+                # when the space button is pressed go back
+                elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                    print("Space button pressed leaveing playerVSmonte...")
+                    self.reset_game()
+                    Sounds.stop()
+                    Sounds.title_music()
+                    return
 
             # AI moves and game logic
             self.handle_alpha_beta_ai()
@@ -169,6 +176,12 @@ class Ai:
                 self.draw_winner(winner)
                 self.reset_game()
 
+            # Check for a draw
+            elif self.board.check_draw():
+                print("It's a draw!")
+                self.draw_winner("Draw")
+                self.reset_game()
+        
             # Draw the board
             self.draw_board()
 

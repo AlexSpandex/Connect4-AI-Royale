@@ -189,17 +189,25 @@ class PlayerAlpha:
                     print("ESC button pressed-Exiting...")
                     pygame.quit()
                     sys.exit()
+
+                # when the space button is pressed go back
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                     print("Space button pressed leaveing playerVSalpha...")
                     self.reset_game()
                     Sounds.stop()
                     Sounds.title_music()
                     return
+                
                 self.handle_mouse_event(event)
             self.handle_alpha_beta_ai()
 
+            # check for draw
+            if self.board.check_draw():
+                self.draw_winner("Draw")
+                self.reset_game()
+
             # Display winning message after the game is over
-            if self.board.winning_move(self.player_piece):
+            elif self.board.winning_move(self.player_piece):
                 self.draw_winner(f"Player {self.player_piece}")
                 self.reset_game()
 
