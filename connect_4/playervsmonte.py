@@ -199,7 +199,11 @@ class PlayerAIGame:
             self.handle_monte_carlo_ai()
 
             # Display winning message after the game is over
-            if self.board.winning_move(self.player_piece):
+            if self.board.is_draw():
+                print("NO WINNER! DRAW")
+                self.reset_game()
+            
+            elif self.board.winning_move(self.player_piece):
                 self.draw_winner(f"Player {self.player_piece}")
                 self.reset_game()
 

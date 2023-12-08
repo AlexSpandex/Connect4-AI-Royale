@@ -85,15 +85,18 @@ class AlphaBeta:
         """
         score = 0
 
-        # Evaluate center column
+        # Evaluate center column: Extracts the center column of the game board and converts it into an int. 
         center_array = [
             int(i) for i in list(self.board.board[:, self.board.column_count // 2])
         ]
+        # counts the number of occurances 1 is in the center
         center_count = center_array.count(1)
+        # adds the total score and the center has more weight compared to other rows
         score += center_count * 3
 
         # Evaluate horizontal
         for row in range(self.board.row_count):
+            # converts the current row to ints.
             row_array = [int(i) for i in list(self.board.board[row, :])]
             for column in range(self.board.column_count - 3):
                 window = row_array[column : column + 4]
@@ -112,7 +115,7 @@ class AlphaBeta:
                 window = [self.board.board[row + i][column + i] for i in range(4)]
                 score += self.evaluate_window(window, 1)
 
-        # Evaluate negative slope diagonal
+        # Evaluate negative slope diagonal - meaning the opponent player has three or more peices together
         for row in range(self.board.row_count - 3):
             for column in range(self.board.column_count - 3):
                 window = [self.board.board[row + 3 - i][column + i] for i in range(4)]

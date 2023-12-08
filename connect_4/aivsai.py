@@ -164,7 +164,10 @@ class Ai:
             self.handle_monte_carlo_ai()
 
             # Check for a winner or draw
-            if self.board.winning_move(self.ai_player_1_piece) or self.board.winning_move(self.ai_player_2_piece):
+            if self.board.is_draw():
+                print("NO WINNER! DRAW")
+                self.reset_game()
+            elif self.board.winning_move(self.ai_player_1_piece) or self.board.winning_move(self.ai_player_2_piece):
                 winner = f"Player {self.ai_player_1_piece}" if self.board.winning_move(self.ai_player_1_piece) else f"Player {self.ai_player_2_piece}"
                 self.draw_winner(winner)
                 self.reset_game()

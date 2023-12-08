@@ -95,6 +95,15 @@ class Board:
 
         # No winning condition found
         return None
+    
+    def game_board_full(self):
+        """checks if the game board is full"""
+        return not any(0 in row for row in self.board)
+    
+    def is_draw(self):
+        """Check if the game is a draw (no winner)"""
+        result = self.game_board_full() and not self.winning_move(1) and not self.winning_move(2)
+        return result
 
     def draw_board(self, screen, radius):
         """Draws the board on screen"""

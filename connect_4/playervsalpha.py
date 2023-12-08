@@ -178,8 +178,8 @@ class PlayerAlpha:
         # initialize game sounds
         Sounds.stop()
         Sounds.game_music()
-        # draws a border to now show background image
-        pygame.draw.rect(self.screen, connect_4.rgbcolors.light_blue, (0,0, self.width, self.board.square_size))
+        # draws a border to not show the background image
+        pygame.draw.rect(self.screen, connect_4.rgbcolors.light_blue, (0, 0, self.width, self.board.square_size))
 
         while not self.game_over:
             for event in pygame.event.get():
@@ -190,7 +190,7 @@ class PlayerAlpha:
                     pygame.quit()
                     sys.exit()
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                    print("Space button pressed leaveing playerVSalpha...")
+                    print("Space button pressed leaving playerVSalpha...")
                     self.reset_game()
                     Sounds.stop()
                     Sounds.title_music()
@@ -198,8 +198,13 @@ class PlayerAlpha:
                 self.handle_mouse_event(event)
             self.handle_alpha_beta_ai()
 
+            # Check for a draw
+            if self.board.is_draw():
+                print("NO WINNER! DRAW")
+                self.reset_game()
+
             # Display winning message after the game is over
-            if self.board.winning_move(self.player_piece):
+            elif self.board.winning_move(self.player_piece):
                 self.draw_winner(f"Player {self.player_piece}")
                 self.reset_game()
 
