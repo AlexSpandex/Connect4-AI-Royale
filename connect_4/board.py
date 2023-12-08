@@ -165,10 +165,5 @@ class Board:
                         ),
                         radius,
                     )
-        # check for draw
-        if self.check_draw():
-            font = pygame.font.Font(None, 36)
-            text = font.render("Draw!", True, connect_4.rgbcolors.white)
-            screen.blit(text, (self.width // 2 - 50, 10))
 
         pygame.display.update()

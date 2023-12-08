@@ -61,22 +61,31 @@ class PlayerAIGame:
         """display the winning message with color coding"""
         if winner == f"Player {self.player_piece}":
             text_color = connect_4.rgbcolors.red
+            text = self.font.render(f"{winner} wins!", True, text_color)
+            text_rect = text.get_rect(center=(self.width // 2, self.board.square_size // 2))
+            self.screen.blit(text, text_rect)
         elif winner == f"Player {self.ai_piece}":
             text_color = connect_4.rgbcolors.yellow
+            text = self.font.render(f"{winner} wins!", True, text_color)
+            text_rect = text.get_rect(center=(self.width // 2, self.board.square_size // 2))
+            self.screen.blit(text, text_rect)
         else:
             text_color = connect_4.rgbcolors.black  # Default color
+            text = self.font.render(f"{winner}!", True, text_color)
+            text_rect = text.get_rect(center=(self.width // 2, self.board.square_size // 2))
+            self.screen.blit(text, text_rect)
             
         # display winning message on the screen
-        text = self.font.render(f"{winner} wins!", True, text_color)
-        text_rect = text.get_rect(center=(self.width // 2, self.board.square_size // 2))
-        self.screen.blit(text, text_rect)
+        # text = self.font.render(f"{winner} wins!", True, text_color)
+        # text_rect = text.get_rect(center=(self.width // 2, self.board.square_size // 2))
+        # self.screen.blit(text, text_rect)
         pygame.display.update()
             
         if winner == f"Player {self.player_piece}":
             self.leaderboard.update_leaderboard("Player 1", "MonteCarlo")
         elif winner == f"Player {self.ai_piece}":
             self.leaderboard.update_leaderboard("MonteCarlo", "Player 1")
-            
+
         self.leaderboard.save_leaderboard()
         
         # Wait for 3 seconds
@@ -156,7 +165,7 @@ class PlayerAIGame:
         """handles the AI player's move using the monte carlo algorithm"""
         if self.turn == self.ai_player:
             state = self.board.board.tolist()[::-1]
-            action = MonteCarloTreeNode.monte_carlo_tree_search(state, 1000, 1)
+            action = MonteCarloTreeNode.monte_carlo_tree_search(state, 10000, 1)
 
             # Check if action is not None
             if action is not None:
@@ -200,8 +209,9 @@ class PlayerAIGame:
                 self.handle_mouse_event(event)
             self.handle_monte_carlo_ai()
 
-            # check for draw
+            # # check for draw
             if self.board.check_draw():
+                print("It's a draw!")
                 self.draw_winner("Draw")
                 self.reset_game()
 
