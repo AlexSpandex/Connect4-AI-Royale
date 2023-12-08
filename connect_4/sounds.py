@@ -54,6 +54,21 @@ class Sounds:
             print(f'Cannot open {"hard_revenge.mp3"}')
             raise SystemExit(1) from pygame_error
 
+    # plays music
+    @staticmethod
+    def leaderboard_music():
+        """Starts the menu screen music"""
+        try:
+            # load and play the title music
+            pygame.mixer.music.load("connect_4/music/departure.mp3")
+            pygame.mixer.music.set_volume(0.5)
+            pygame.mixer.music.play(0, 0.0, 500)
+
+        except pygame.error as pygame_error:
+            # handle errors loading music
+            print(f'Cannot open {"departure.mp3"}')
+            raise SystemExit(1) from pygame_error
+        
     # stops the music
     @staticmethod
     def stop():

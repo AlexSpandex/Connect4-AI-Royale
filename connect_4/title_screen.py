@@ -142,4 +142,4 @@ class TitleScreen:
         elif ai_vs_ai_button.collidepoint(mouse_pos):
             self.selected_option = "Secret"
             print("AI vs AI button pressed")
-        
+
