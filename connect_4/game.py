@@ -25,7 +25,7 @@ class Game:
         """
         self.selected_option = None
         self.title_screen = TitleScreen()
-        self.leaderboard = LeaderBoardScreen()
+        self.leaderboard = LeaderBoardScreen(self.title_screen.screen)
         # self.player_game = PlayerGame(self.title_screen.screen)
         self.player_vs_ai_game = PlayerAIGame(self.title_screen.screen)
         self.player_vs_alpha_game = PlayerAlpha(self.title_screen.screen)

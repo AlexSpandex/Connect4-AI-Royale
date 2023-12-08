@@ -64,7 +64,7 @@ class PlayerAlpha:
         if winner == f"Player {self.player_piece}":
             text_color = connect_4.rgbcolors.red
         elif winner == f"Player {self.ai_piece}":
-            text_color = connect_4.rgbcolors.yellow
+            text_color = connect_4.rgbcolors.orange
         else:
             text_color = connect_4.rgbcolors.black  # Default color
         
