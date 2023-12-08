@@ -63,15 +63,24 @@ class Ai:
         """display the winning message with color coding"""
         if winner == f"Player {self.ai_player_1_piece}":
             text_color = connect_4.rgbcolors.orange
+            text = self.font.render(f"{winner} wins!", True, text_color)
+            text_rect = text.get_rect(center=(self.width // 2, self.board.square_size // 2))
+            self.screen.blit(text, text_rect)
         elif winner == f"Player {self.ai_player_2_piece}":
             text_color = connect_4.rgbcolors.yellow
+            text = self.font.render(f"{winner} wins!", True, text_color)
+            text_rect = text.get_rect(center=(self.width // 2, self.board.square_size // 2))
+            self.screen.blit(text, text_rect)
         else:
             text_color = connect_4.rgbcolors.black  # Default color
+            text = self.font.render("DRAW!", True, text_color)
+            text_rect = text.get_rect(center=(self.width // 2, self.board.square_size // 2))
+            self.screen.blit(text, text_rect)
 
         # display winning message on the screen
-        text = self.font.render(f"{winner} wins!", True, text_color)
-        text_rect = text.get_rect(center=(self.width // 2, self.board.square_size // 2))
-        self.screen.blit(text, text_rect)
+        # text = self.font.render(f"{winner} wins!", True, text_color)
+        # text_rect = text.get_rect(center=(self.width // 2, self.board.square_size // 2))
+        # self.screen.blit(text, text_rect)
         pygame.display.update()
         
         if winner == f"Player {self.ai_player_1_piece}":

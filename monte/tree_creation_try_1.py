@@ -30,7 +30,8 @@ class MonteCarloTreeNode:
         self.losses = 0
         self.game_over = False
 
-        # Add the current node to the dictionary hold refrence to self so if self changes so does the value of the dictionary at state
+        # Add the current node to the dictionary hold refrence to self 
+        # so if self changes so does the value of the dictionary at state
         MonteCarloTreeNode.all_nodes[tuple(map(tuple, self.state))] = self
 
     def find_node_if_in_tree(initial_state):
@@ -126,6 +127,70 @@ class MonteCarloTreeNode:
         # Ensure that the chosen random action does not exceed the bounds of the game state
         return random_state_or_action
 
+    def evaluate_window(self, window, player):
+        """
+        Evaluate a window of four consecutive positions for a given player
+
+        Parameters:
+        - window (list): List of four consecutive positions
+        - piece (int): Player's piece (1 or 2)
+
+        Returns:
+        - int: Score for the given window and player's piece
+        """
+        # Customize this method based on your specific criteria for evaluating a window
+        # For example, you can assign scores based on the number of player's pieces in the window
+        player_pieces = window.count(player)
+        opponent_pieces = window.count(3 - player)  # Assuming player values are 1 and 2
+        if player_pieces == 4:
+            return 100  # A win for the player
+        elif opponent_pieces == 4:
+            return -100  # A win for the opponent
+        else:
+            return player_pieces  # Adjust the scoring logic as needed
+
+    def evaluate_position(self, state):
+        """
+        evaluate the current game board position
+
+        Returns:
+        - int: Score for the current game board position
+        """
+        score = 0
+
+        # Evaluate center column
+        center_array = [row[len(row) // 2] for row in self.state]
+        center_count = center_array.count(1)
+        score += center_count * 3
+
+        # Evaluate horizontal
+        for row in range(len(state)):
+            row_array = [int(i) for i in state[row]]
+            for column in range(len(state[0]) - 3):
+                window = row_array[column : column + 4]
+                score += self.evaluate_window(window, 1)
+
+        # Evaluate vertical
+        for column in range(len(state[0])):
+            col_array = [int(state[row][column]) for row in range(len(state) - 3)]
+            for row in range(len(state) - 3):
+                window = col_array[row : row + 4]
+                score += self.evaluate_window(window, 1)
+
+        # Evaluate positive slope diagonal
+        for row in range(len(state) - 3):
+            for column in range(len(state[0]) - 3):
+                window = [state[row + i][column + i] for i in range(4)]
+                score += self.evaluate_window(window, 1)
+
+        # Evaluate negative slope diagonal
+        for row in range(len(state) - 3):
+            for column in range(len(state[0]) - 3):
+                window = [state[row + 3 - i][column + i] for i in range(4)]
+                score += self.evaluate_window(window, 1)
+
+        return score
+
     def simulate_fake_game_randomly_till_terminal(self):
         current_node = self
         while not current_node.is_terminal_and_win() and not current_node.no_winner():
@@ -135,7 +200,13 @@ class MonteCarloTreeNode:
             if not possible_actions:
                 break
 
-            action = current_node.random_choice(possible_actions)
+            # action = current_node.random_choice(possible_actions)
+            action_scores = [
+                self.evaluate_position(state) for state in possible_actions
+            ]
+
+            best_action_index = action_scores.index(max(action_scores))
+            action = possible_actions[best_action_index]
 
             if MonteCarloTreeNode.find_node_if_in_tree(action) is not None:
                 current_node = MonteCarloTreeNode.all_nodes[tuple(map(tuple, action))]
@@ -180,9 +251,15 @@ class MonteCarloTreeNode:
         else:
             return self.children[0]  # Handle the case when there are no children
 
-    def select_node_based_on_uct_unless_all_children_not_expanded_to_use_for_simulation(self):
+    def select_node_based_on_uct_unless_all_children_not_expanded_to_use_for_simulation(
+        self,
+    ):
         current_node = self
-        while current_node is not None and not current_node.is_terminal_and_win() and not current_node.no_winner():
+        while (
+            current_node is not None
+            and not current_node.is_terminal_and_win()
+            and not current_node.no_winner()
+        ):
             if not current_node.is_fully_expanded():
                 return current_node.expand_current_node()
             else:
@@ -206,61 +283,37 @@ class MonteCarloTreeNode:
                 pass
             current_node = current_node.parent
 
-    # def monte_carlo_tree_search(initial_state, iterations=1000, current_player=1):
-    #     if MonteCarloTreeNode.find_node_if_in_tree(initial_state) != None:
-    #         root_node = MonteCarloTreeNode.all_nodes[tuple(map(tuple, initial_state))]
-    #     else:
-    #         root_node = MonteCarloTreeNode(initial_state, current_player)
-    #     if not root_node.no_winner() and not root_node.is_terminal_and_win():
-    #         for i in range(iterations):
-    #             choosen_action = (
-    #                 root_node.select_node_based_on_uct_unless_all_children_not_expanded_to_use_for_simulation()
-    #             )
-    #             reward_or_penalty = (
-    #                 choosen_action.simulate_fake_game_randomly_till_terminal()
-    #             )
-    #             choosen_action.backpropogate_assign_wins_and_losses_after_simulation(
-    #                 reward_or_penalty
-    #             )
-    #             wins = [c.wins for c in root_node.children]
-    #             visits = [c.visits for c in root_node.children]
-    #             # print(reward_or_penalty,'wins', wins, 'visits', visits,'root wins', root_node.wins, root_node.visits)
-    #         avg_score = [c.wins / c.visits for c in root_node.children]
-    #         best_avg_score_index = avg_score.index(max(avg_score))
-    #         # for row in root_node.children[best_avg_score_index].state:
-    #         #     print(row)
-    #         return root_node.children[best_avg_score_index]
-    #     else:
-    #         return None
     def monte_carlo_tree_search(initial_state, iterations=1000, current_player=1):
         if MonteCarloTreeNode.find_node_if_in_tree(initial_state) is not None:
             root_node = MonteCarloTreeNode.all_nodes[tuple(map(tuple, initial_state))]
         else:
             root_node = MonteCarloTreeNode(initial_state, current_player)
-        
+
         if not root_node.no_winner() and not root_node.is_terminal_and_win():
             for i in range(iterations):
                 choosen_action = (
                     root_node.select_node_based_on_uct_unless_all_children_not_expanded_to_use_for_simulation()
                 )
-                
+
                 if choosen_action is None:
                     break
-                
+
                 reward_or_penalty = (
                     choosen_action.simulate_fake_game_randomly_till_terminal()
                 )
                 choosen_action.backpropogate_assign_wins_and_losses_after_simulation(
                     reward_or_penalty
                 )
-                
+
             if root_node.children:
                 # avg_score = [c.wins / c.visits for c in root_node.children]
-                avg_score = [c.wins/(c.visits+(c.losses * 20)) for c in root_node.children]
+                avg_score = [
+                    c.wins / (c.visits + (c.losses * 20)) for c in root_node.children
+                ]
                 best_avg_score_index = avg_score.index(max(avg_score))
                 return root_node.children[best_avg_score_index]
         return None
-    
+
     def get_coordinates(root_state, best_child_state):
         for column in range(len(root_state[0])):
             for row in range(len(root_state)):
